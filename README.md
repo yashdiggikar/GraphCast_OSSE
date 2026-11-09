@@ -1,5 +1,7 @@
 # GraphCast_OSSE
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24092593.svg)](https://doi.org/10.5281/zenodo.24092593)
+
 Observing System Simulation Experiment (OSSE) **truth-insertion** framework for Google
 DeepMind's **GraphCast** (full operational-resolution checkpoint: 0.25°, 37 pressure levels),
 released with the manuscript *An AI-Based OSSE Framework to Evaluate Learned Physical Consistency: A Multi-Model Study Using FourCastNet, Aurora, Prithvi WxC, and GraphCast* (Diggikar, Halem, and Raman) (submitted to AGU *JGR: Machine Learning
@@ -145,5 +147,6 @@ The code in `model/` is a modified fork of google-deepmind/graphcast, licensed u
 are subject to DeepMind's CC BY-NC-SA 4.0 terms.
 
 ## Citation
-See `CITATION.cff`. Please also cite GraphCast: Lam, R., et al. (2023), Learning skillful
+Diggikar, Y., Halem, M., & Raman, A. (2026). *GraphCast_OSSE* (Version 1.0.0) [Software]. Zenodo. https://doi.org/10.5281/zenodo.24092594
+(All versions: https://doi.org/10.5281/zenodo.24092593.) See also `CITATION.cff`. Please also cite GraphCast: Lam, R., et al. (2023), Learning skillful
 medium-range global weather forecasting, *Science*, 382, 1416–1421, doi:10.1126/science.adi2336.

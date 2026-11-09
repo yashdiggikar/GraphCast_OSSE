@@ -19,6 +19,11 @@ authors:
 license: Apache-2.0
 repository-code: "https://github.com/yashdiggikar/GraphCast_OSSE"
 version: "1.0.0"
+doi: "10.5281/zenodo.24092594"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24092593"
+    description: "Concept DOI (all versions)"
 date-released: "2026-11-09"
 keywords:
   - observing system simulation experiment
