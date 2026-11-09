@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below (and cite the associated paper)."
+title: "GraphCast_OSSE: truth-insertion OSSE framework for Google DeepMind GraphCast (0.25 deg, 37 levels)"
+type: software
+authors:
+  - family-names: Diggikar
+    given-names: Yash
+    affiliation: "University of Maryland, Baltimore County, Baltimore, MD, USA"
+    orcid: "https://orcid.org/0009-0004-8024-3279"
+    email: yashd1@umbc.edu
+  - family-names: Halem
+    given-names: Milton
+    affiliation: "University of Maryland, Baltimore County, Baltimore, MD, USA"
+    orcid: "https://orcid.org/0000-0002-5614-3612"
+  - family-names: Raman
+    given-names: Aishwarya
+    affiliation: "Earth Sciences Division, NASA Ames Research Center, Moffett Field, CA, USA"
+    orcid: "https://orcid.org/0009-0003-3973-4167"
+license: Apache-2.0
+repository-code: "https://github.com/yashdiggikar/GraphCast_OSSE"
+version: "1.0.0"
+date-released: "2026-11-09"
+keywords:
+  - observing system simulation experiment
+  - data assimilation
+  - truth insertion
+  - AI weather prediction
+  - machine learning
+preferred-citation:
+  type: article
+  title: "An AI-Based OSSE Framework to Evaluate Learned Physical Consistency: A Multi-Model Study Using FourCastNet, Aurora, Prithvi WxC, and GraphCast"
+  authors:
+    - family-names: Diggikar
+      given-names: Yash
+      orcid: "https://orcid.org/0009-0004-8024-3279"
+    - family-names: Halem
+      given-names: Milton
+      orcid: "https://orcid.org/0000-0002-5614-3612"
+    - family-names: Raman
+      given-names: Aishwarya
+      orcid: "https://orcid.org/0009-0003-3973-4167"
+  journal: "Journal of Geophysical Research: Machine Learning and Computation"
+  status: submitted

@@ -1,0 +1,291 @@
+GC-DETER-2023 -- GraphCast full (0.25deg, 37-level) deterministic re-run
+IC: 2023-02-01T06:00Z | 240 steps (60 days) | L40S-pinned, xla_gpu_deterministic_ops
+Generated: Mon Sep  7 10:39:06 PM EDT 2026
+==================================================================================
+
+----------------------------------------------------------------------------------
+1. INPUT / TRUTH DATA
+----------------------------------------------------------------------------------
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/dataset_samples/source-era5_date-2023-02-01_res-0.25_levels-37_steps-12.nc
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/era5_pressure_2023_febapr.grib
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/era5_pressure_2023_febapr.grib.gcidx
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/extras_feb2023.grib
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/extras_feb2023.grib.5b7b6.idx
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/surface_feb01_2023.grib
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/surface_feb01_2023.grib.idx
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/surface_jan31_2023.grib
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/era5_feb2023/surface_jan31_2023.grib.idx
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/truth/truth_leadtime_2023-02-01IC.nc
+
+----------------------------------------------------------------------------------
+2. SCRIPTS (shared, top-level)
+----------------------------------------------------------------------------------
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/build_ic_feb2023.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_bias_maps.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_cloud_rmse.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_latslice_rmse.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_terrain_rmse.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/download_era5_37level_feb2023.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/download_era5_ic_extras_feb2023.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/download_era5_ic_surface_feb2023.py
+/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/prepare_truth_feb2023.py
+
+----------------------------------------------------------------------------------
+3. VARIANT: control -- CONTROL (free-running, no insertion)
+----------------------------------------------------------------------------------
+  [raw prediction chunks]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/full_predictions/rollout_60day_2023-02-01/chunk_0000.nc
+    ... (60 chunk files total)
+    dir: /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/full_predictions/rollout_60day_2023-02-01
+  [RMSE / plots / comparison]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/results/csv/rmse_60day_2023-02-01.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/results/plots/rmse_vs_leadtime_geopotential.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/results/plots/rmse_vs_leadtime_temperature.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/results/plots/rmse_vs_leadtime_u_component_of_wind.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/results/plots/rmse_vs_leadtime_v_component_of_wind.png
+
+----------------------------------------------------------------------------------
+3. VARIANT: osse_t_global -- T-insertion, global, 26 levels (drop top 11 stratospheric)
+----------------------------------------------------------------------------------
+  [raw prediction chunks]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/full_predictions/osse_t_global_2023-02-01/chunk_0000.nc
+    ... (60 chunk files total)
+    dir: /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/full_predictions/osse_t_global_2023-02-01
+  [RMSE / plots / comparison]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/csv/compare_t_global_pct_improvement.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/csv/rmse_osse_t_global_2023-02-01.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_pct_improvement.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_T1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_T300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_T500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_U1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_U300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_U500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_V1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_V300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_V500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_Z1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_Z300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/compare_t_global_Z500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/rmse_vs_leadtime_osse_t_global_geopotential.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/rmse_vs_leadtime_osse_t_global_temperature.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/rmse_vs_leadtime_osse_t_global_u_component_of_wind.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/results/plots/rmse_vs_leadtime_osse_t_global_v_component_of_wind.png
+
+----------------------------------------------------------------------------------
+3. VARIANT: osse_z_global -- Z (geopotential)-insertion, global, all 37 levels
+----------------------------------------------------------------------------------
+  [raw prediction chunks]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/full_predictions/osse_z_global_2023-02-01/chunk_0000.nc
+    ... (60 chunk files total)
+    dir: /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/full_predictions/osse_z_global_2023-02-01
+  [RMSE / plots / comparison]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/csv/compare_z_global_pct_improvement.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/csv/rmse_osse_z_global_2023-02-01.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_pct_improvement.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_T1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_T300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_T500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_U1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_U300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_U500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_V1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_V300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_V500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_Z1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_Z300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/compare_z_global_Z500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/rmse_vs_leadtime_osse_z_global_geopotential.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/rmse_vs_leadtime_osse_z_global_temperature.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/rmse_vs_leadtime_osse_z_global_u_component_of_wind.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/results/plots/rmse_vs_leadtime_osse_z_global_v_component_of_wind.png
+
+----------------------------------------------------------------------------------
+3. VARIANT: osse_uv_global -- U+V (wind)-insertion, global, all 37 levels
+----------------------------------------------------------------------------------
+  [raw prediction chunks]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/full_predictions/osse_uv_global_2023-02-01/chunk_0000.nc
+    ... (60 chunk files total)
+    dir: /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/full_predictions/osse_uv_global_2023-02-01
+  [RMSE / plots / comparison]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/csv/compare_uv_global_pct_improvement.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/csv/rmse_osse_uv_global_2023-02-01.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_pct_improvement.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_T1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_T300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_T500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_U1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_U300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_U500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_V1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_V300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_V500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_Z1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_Z300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/compare_uv_global_Z500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/rmse_vs_leadtime_osse_uv_global_geopotential.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/rmse_vs_leadtime_osse_uv_global_temperature.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/rmse_vs_leadtime_osse_uv_global_u_component_of_wind.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/results/plots/rmse_vs_leadtime_osse_uv_global_v_component_of_wind.png
+
+----------------------------------------------------------------------------------
+3. VARIANT: combined_tuv_ins -- EXTENDED: combined T+U+V insertion (T=26lvl, U/V=37lvl)
+----------------------------------------------------------------------------------
+  [raw prediction chunks]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/full_predictions/combined_tuv_ins_2023-02-01/chunk_0000.nc
+    ... (60 chunk files total)
+    dir: /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/full_predictions/combined_tuv_ins_2023-02-01
+  [RMSE / plots / comparison]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/csv/compare_combined_tuv_ins_pct_improvement.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/csv/rmse_combined_tuv_ins_2023-02-01.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_pct_improvement.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_T1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_T300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_T500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_U1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_U300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_U500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_V1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_V300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_V500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_Z1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_Z300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/compare_combined_tuv_ins_Z500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/rmse_vs_leadtime_combined_tuv_ins_geopotential.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/rmse_vs_leadtime_combined_tuv_ins_temperature.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/rmse_vs_leadtime_combined_tuv_ins_u_component_of_wind.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/results/plots/rmse_vs_leadtime_combined_tuv_ins_v_component_of_wind.png
+
+----------------------------------------------------------------------------------
+3. VARIANT: land_temp_ins -- EXTENDED: T-insertion, LAND grid points only (land_sea_mask>0.5), 26 levels
+----------------------------------------------------------------------------------
+  [raw prediction chunks]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/full_predictions/land_temp_ins_2023-02-01/chunk_0000.nc
+    ... (60 chunk files total)
+    dir: /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/full_predictions/land_temp_ins_2023-02-01
+  [RMSE / plots / comparison]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/csv/compare_land_temp_ins_pct_improvement.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/csv/rmse_land_temp_ins_2023-02-01.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_pct_improvement.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_T1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_T300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_T500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_U1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_U300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_U500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_V1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_V300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_V500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_Z1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_Z300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/compare_land_temp_ins_Z500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/rmse_vs_leadtime_land_temp_ins_geopotential.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/rmse_vs_leadtime_land_temp_ins_temperature.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/rmse_vs_leadtime_land_temp_ins_u_component_of_wind.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/results/plots/rmse_vs_leadtime_land_temp_ins_v_component_of_wind.png
+
+----------------------------------------------------------------------------------
+3. VARIANT: ocean_temp_ins -- EXTENDED: T-insertion, OCEAN grid points only (land_sea_mask<=0.5), 26 levels
+----------------------------------------------------------------------------------
+  [raw prediction chunks]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/full_predictions/ocean_temp_ins_2023-02-01/chunk_0000.nc
+    ... (60 chunk files total)
+    dir: /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/full_predictions/ocean_temp_ins_2023-02-01
+  [RMSE / plots / comparison]
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/csv/compare_ocean_temp_ins_pct_improvement.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/csv/rmse_ocean_temp_ins_2023-02-01.csv
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_pct_improvement.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_T1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_T300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_T500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_U1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_U300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_U500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_V1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_V300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_V500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_Z1000.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_Z300.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/compare_ocean_temp_ins_Z500.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/rmse_vs_leadtime_ocean_temp_ins_geopotential.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/rmse_vs_leadtime_ocean_temp_ins_temperature.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/rmse_vs_leadtime_ocean_temp_ins_u_component_of_wind.png
+    /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/results/plots/rmse_vs_leadtime_ocean_temp_ins_v_component_of_wind.png
+
+----------------------------------------------------------------------------------
+4. REGIME ANALYSIS (lat-slice / terrain / cloud RMSE) -- t/z/uv insertion runs only
+----------------------------------------------------------------------------------
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/cloud/csv/rmse_cloud_osse_t_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/cloud/csv/rmse_cloud_osse_uv_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/cloud/csv/rmse_cloud_osse_z_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/lat_slice/csv/rmse_latslice_osse_t_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/lat_slice/csv/rmse_latslice_osse_uv_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/lat_slice/csv/rmse_latslice_osse_z_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/terrain/csv/rmse_terrain_osse_t_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/terrain/csv/rmse_terrain_osse_uv_global.csv
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/regime_analysis_results/terrain/csv/rmse_terrain_osse_z_global.csv
+
+----------------------------------------------------------------------------------
+5. SPATIAL BIAS MAPS (.npy, day 30-60 mean pred-truth) -- control + t/z/uv insertion
+----------------------------------------------------------------------------------
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_geopotential_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_geopotential_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_geopotential_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_temperature_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_temperature_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_temperature_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_u_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_u_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_u_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_v_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_v_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/bias_v_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/lat.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/control/lon.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_geopotential_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_geopotential_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_geopotential_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_temperature_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_temperature_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_temperature_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_u_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_u_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_u_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_v_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_v_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/bias_v_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/lat.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_t_global/lon.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_geopotential_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_geopotential_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_geopotential_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_temperature_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_temperature_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_temperature_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_u_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_u_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_u_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_v_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_v_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/bias_v_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/lat.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_uv_global/lon.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_geopotential_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_geopotential_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_geopotential_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_temperature_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_temperature_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_temperature_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_u_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_u_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_u_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_v_component_of_wind_1000hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_v_component_of_wind_300hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/bias_v_component_of_wind_500hpa.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/lat.npy
+  /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/bias_maps/osse_z_global/lon.npy
+
+----------------------------------------------------------------------------------
+6. CURATED FINAL COPY (GC_FINAL_RESULTS/, note: mirrors the 2022-01-01 deterministic_run study, NOT this 2023 study)
+----------------------------------------------------------------------------------
+  See /umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC_FINAL_RESULTS/ (separate study)

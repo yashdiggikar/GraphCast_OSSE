@@ -1,0 +1,150 @@
+repo_path	original_path	md5	note
+analysis/compute_bias_maps.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_bias_maps.py	e70423a34a6e986566a553180c5ad046	
+analysis/compute_cloud_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_cloud_rmse.py	483a4929ef699cb915243f3f843fbadc	
+analysis/compute_cloud_rmse_q.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_cloud_rmse_q.py	f67aa6a41da243fb75e8a49dc59761b4	
+analysis/compute_latslice_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_latslice_rmse.py	a27b2c7350a017f90dcb5459b8ed85ea	
+analysis/compute_rmse_q.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_rmse_q.py	2bc0f3f196680cbe07596920ca37d6ba	
+analysis/compute_terrain_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_terrain_rmse.py	cf4592d4374107e4c1f4fe309ec6eeaf	
+analysis/compute_terrain_rmse_q.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/compute_terrain_rmse_q.py	05f20c0868b656d9ee2a072b451d61e1	
+analysis/shared/compare_control_vs_osse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/compare_control_vs_osse.py	a710d64867dd4ef4ff3016779236d33c	parent Graphcast-full/ script
+analysis/shared/plot_spatial_bias.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/plot_spatial_bias.py	31b624cdc3cb543f80768e2cce1c38f2	parent Graphcast-full/ script
+analysis/slurm/bias_maps_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/bias_maps_feb2023.sbatch	32ccdd25e2b1d173e7b95b518b3163ec	
+analysis/slurm/finish_base_runs_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/finish_base_runs_feb2023.sbatch	fb5cd7fbcfdfcb6cb78b59bd1262a8f9	
+analysis/slurm/humidity_all_experiments_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/humidity_all_experiments_feb2023.sbatch	5a3d3f381aaa24c9121c30dc9efed797	
+analysis/slurm/regime_analysis_base_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/regime_analysis_base_feb2023.sbatch	57ab4202e1737237fd573a71b64fc8f6	
+analysis/slurm/regime_analysis_control_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/regime_analysis_control_feb2023.sbatch	ab5eb74d81e64211f28d3964825c866a	
+analysis/slurm/regime_analysis_extended_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/regime_analysis_extended_feb2023.sbatch	2da8235030041de3955342018686cadd	
+analysis/slurm/regime_bias_humidity_perturbed_corr_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/regime_bias_humidity_perturbed_corr_feb2023.sbatch	a02e9f3b02cd747561ddd6a4d9a3a395	
+analysis/slurm/regime_q_expanded_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/regime_q_expanded_feb2023.sbatch	ee26879cd79f1cf611de64c5466c807e	
+analysis/spillover/run_spillover_analysis.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/spillover_analysis/run_spillover_analysis.sbatch	4f953b76b63fc8932e574130e05c7027	
+analysis/spillover/spillover_analysis.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/spillover_analysis/spillover_analysis.py	4c5f528beade53e7ed9a36e69ea47efd	
+analysis/spillover/spillover_decay_methodology.txt	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/spillover_analysis/spillover_decay_methodology.txt	492342baa6d2eff492387d0cf41da5dd	
+docs/COP_METHOD_OVERVIEW.md	/umbc/rs/pi_halem/users/yashd1/PERTURBATION_EXPERIMENTS/METHOD_OVERVIEW.md	1615b9013cde6392d52e9bfa4ffb78cc	referenced by perturbation code
+docs/PERTURBATION_IMPLEMENTATION.md	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/PERTURBATION_IMPLEMENTATION.md	ff6a7ea2d54c192be6b4a04e2bc63a01	
+docs/notes/GRAPHCAST_T_INSERTION_ANOMALY_ANALYSIS.txt	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GRAPHCAST_T_INSERTION_ANOMALY_ANALYSIS.txt	3d3b097cc590cedefdcd6fa5637e4cfd	
+docs/notes/PERTURBATION_IMPLEMENTATION_original_study.md	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/PERTURBATION_IMPLEMENTATION.md	b5b083d6bba7f92233e69da5f96f0d0e	
+docs/notes/T_INSERTION_IMPLEMENTATION_AUDIT.txt	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/blow_up.txt	8be0fe6da33aedd2545b4df42e050e4d	
+docs/notes/session_log.md	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/session_log.md	2d5e7084998eb450578f3f418ba7621e	
+docs/original_file_paths.txt	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/file_paths.txt	944bbbc74ab5a8f9dce3d7a0b2cb0f22	
+experiments/01_control/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/control
+experiments/01_control/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/plot_rmse.py	e4afd3ffc0ae3238ca338e789b72f730	GC-DETER-2023/control
+experiments/01_control/run_graphcast_longrollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/run_graphcast_longrollout.py	03c576037b7e10dcf25e163f4b9ca265	GC-DETER-2023/control
+experiments/01_control/slurm/run_control_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/slurm/run_control_feb2023.sbatch	020eca0d7faa53d3f9b406b3f6edf41f	GC-DETER-2023/control
+experiments/02_t_insertion_global/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/osse_t_global
+experiments/02_t_insertion_global/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/graphcast/rollout.py	79701d7d8eada1f1bc1cbae4d50683ed	as-run override
+experiments/02_t_insertion_global/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/osse_t_global
+experiments/02_t_insertion_global/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/run_osse_insertion.py	fb36f2b0054584376da3ce747af9efda	GC-DETER-2023/osse_t_global
+experiments/02_t_insertion_global/slurm/run_osse_t_global_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_t_global/slurm/run_osse_t_global_feb2023.sbatch	a6d4cf60a443d64bb2ff499504408a5c	GC-DETER-2023/osse_t_global
+experiments/03_uv_insertion_global/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/osse_uv_global
+experiments/03_uv_insertion_global/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/graphcast/rollout.py	de24605481f4eef0a1b8240b9574b195	as-run override
+experiments/03_uv_insertion_global/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/osse_uv_global
+experiments/03_uv_insertion_global/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/run_osse_insertion.py	e7a483ef245a915279d8dadfdbe0597a	GC-DETER-2023/osse_uv_global
+experiments/03_uv_insertion_global/slurm/run_osse_uv_global_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_uv_global/slurm/run_osse_uv_global_feb2023.sbatch	eebe8204496357aa609131505927ff3f	GC-DETER-2023/osse_uv_global
+experiments/04_z_insertion_global/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/osse_z_global
+experiments/04_z_insertion_global/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/graphcast/rollout.py	de24605481f4eef0a1b8240b9574b195	as-run override
+experiments/04_z_insertion_global/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/osse_z_global
+experiments/04_z_insertion_global/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/run_osse_insertion.py	ee53b86bc8e6e7f7a2032de642030b3f	GC-DETER-2023/osse_z_global
+experiments/04_z_insertion_global/slurm/run_osse_z_global_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/osse_z_global/slurm/run_osse_z_global_feb2023.sbatch	83ebae49fbf4d968cca7bd670ba99be2	GC-DETER-2023/osse_z_global
+experiments/05_t_insertion_land/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/land_temp_ins
+experiments/05_t_insertion_land/extract_propagation_arrays.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/extract_propagation_arrays.py	3a47c7b008c2e48c22d782c9b6475733	GC-DETER-2023/land_temp_ins
+experiments/05_t_insertion_land/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/graphcast/rollout.py	79701d7d8eada1f1bc1cbae4d50683ed	as-run override
+experiments/05_t_insertion_land/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/land_temp_ins
+experiments/05_t_insertion_land/propagation_meta_land_temp.json	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/propagation_meta_land_temp.json	e923ca7eb3df02641056cc9c70284baa	GC-DETER-2023/land_temp_ins
+experiments/05_t_insertion_land/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/run_osse_insertion.py	fb36f2b0054584376da3ce747af9efda	GC-DETER-2023/land_temp_ins
+experiments/05_t_insertion_land/slurm/run_land_temp_ins_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/land_temp_ins/slurm/run_land_temp_ins_feb2023.sbatch	aa799b08bc0e67ff3d83d4f8c2afeb47	GC-DETER-2023/land_temp_ins
+experiments/06_t_insertion_ocean/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/ocean_temp_ins
+experiments/06_t_insertion_ocean/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/graphcast/rollout.py	79701d7d8eada1f1bc1cbae4d50683ed	as-run override
+experiments/06_t_insertion_ocean/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/ocean_temp_ins
+experiments/06_t_insertion_ocean/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/run_osse_insertion.py	fb36f2b0054584376da3ce747af9efda	GC-DETER-2023/ocean_temp_ins
+experiments/06_t_insertion_ocean/slurm/finish_ocean_temp_ins_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/slurm/finish_ocean_temp_ins_feb2023.sbatch	43561f5c77ce5a465a330841e4cd6fad	GC-DETER-2023/ocean_temp_ins
+experiments/06_t_insertion_ocean/slurm/run_ocean_temp_ins_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/ocean_temp_ins/slurm/run_ocean_temp_ins_feb2023.sbatch	594b98c546bd88ee04081de49f455333	GC-DETER-2023/ocean_temp_ins
+experiments/07_tuv_insertion_global/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/combined_tuv_ins
+experiments/07_tuv_insertion_global/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/graphcast/rollout.py	79701d7d8eada1f1bc1cbae4d50683ed	as-run override
+experiments/07_tuv_insertion_global/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/combined_tuv_ins
+experiments/07_tuv_insertion_global/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/run_osse_insertion.py	fb36f2b0054584376da3ce747af9efda	GC-DETER-2023/combined_tuv_ins
+experiments/07_tuv_insertion_global/slurm/run_combined_tuv_ins_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/combined_tuv_ins/slurm/run_combined_tuv_ins_feb2023.sbatch	af019a627fba518044e494a4c785ec3c	GC-DETER-2023/combined_tuv_ins
+experiments/08_t_insertion_perturbed_cop/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/T_PERTURBED_CORR/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/T_PERTURBED_CORR
+experiments/08_t_insertion_perturbed_cop/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/T_PERTURBED_CORR/graphcast/rollout.py	54c29899359b78771f0d57396811ae73	as-run override
+experiments/08_t_insertion_perturbed_cop/perturbation.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/T_PERTURBED_CORR/perturbation.py	7c11c69da5ef850c3a564effd4de7865	GC-DETER-2023/T_PERTURBED_CORR
+experiments/08_t_insertion_perturbed_cop/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/T_PERTURBED_CORR/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/T_PERTURBED_CORR
+experiments/08_t_insertion_perturbed_cop/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/T_PERTURBED_CORR/run_osse_insertion.py	fb36f2b0054584376da3ce747af9efda	GC-DETER-2023/T_PERTURBED_CORR
+experiments/08_t_insertion_perturbed_cop/slurm/finish_t_perturbed_corr_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/T_PERTURBED_CORR/slurm/finish_t_perturbed_corr_feb2023.sbatch	27854b3cb59dabb068ffda114d22e4bc	GC-DETER-2023/T_PERTURBED_CORR
+experiments/08_t_insertion_perturbed_cop/slurm/run_t_perturbed_corr_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/T_PERTURBED_CORR/slurm/run_t_perturbed_corr_feb2023.sbatch	4995fe7ace19364a8ee24be7312becd5	GC-DETER-2023/T_PERTURBED_CORR
+experiments/09_uv_insertion_perturbed_cop/compute_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/UV_PERTURBED_CORR/compute_rmse.py	cd50bebfbad7fb47e246b15961b72c3a	GC-DETER-2023/UV_PERTURBED_CORR
+experiments/09_uv_insertion_perturbed_cop/model_overrides/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/UV_PERTURBED_CORR/graphcast/rollout.py	ada1056b6cea2c43fcd93ce238186721	as-run override
+experiments/09_uv_insertion_perturbed_cop/perturbation.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/UV_PERTURBED_CORR/perturbation.py	7c11c69da5ef850c3a564effd4de7865	GC-DETER-2023/UV_PERTURBED_CORR
+experiments/09_uv_insertion_perturbed_cop/plot_rmse.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/UV_PERTURBED_CORR/plot_rmse.py	16aca89b0b12c536f55f4ebfd4d79fe1	GC-DETER-2023/UV_PERTURBED_CORR
+experiments/09_uv_insertion_perturbed_cop/run_osse_insertion.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/UV_PERTURBED_CORR/run_osse_insertion.py	e7a483ef245a915279d8dadfdbe0597a	GC-DETER-2023/UV_PERTURBED_CORR
+experiments/09_uv_insertion_perturbed_cop/slurm/finish_uv_perturbed_corr_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/UV_PERTURBED_CORR/slurm/finish_uv_perturbed_corr_feb2023.sbatch	b49897f489cce1137c0be16ff26a6dd9	GC-DETER-2023/UV_PERTURBED_CORR
+experiments/09_uv_insertion_perturbed_cop/slurm/run_uv_perturbed_corr_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/UV_PERTURBED_CORR/slurm/run_uv_perturbed_corr_feb2023.sbatch	45e7c9561463a4334d221c11992b3a30	GC-DETER-2023/UV_PERTURBED_CORR
+model/CONTRIBUTING.md	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/CONTRIBUTING.md	f3516831bed11a880d8894098640bd46	graphcast-OSSE fork repo (non-package files)
+model/LICENSE	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/LICENSE	3b83ef96387f14655fc854ddc3c6bd57	graphcast-OSSE fork repo (non-package files)
+model/README.md	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/README.md	7df31e8ceccd31190b695ae7acffca66	graphcast-OSSE fork repo (non-package files)
+model/docs/GenCast_0p25deg_accelerator_scorecard.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/GenCast_0p25deg_accelerator_scorecard.png	d751fa99fec69c3c75cfa63fce1893f2	graphcast-OSSE fork repo (non-package files)
+model/docs/GenCast_0p25deg_attention_implementation_scorecard.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/GenCast_0p25deg_attention_implementation_scorecard.png	028aaef10978fba8e4b8146f9d84c4de	graphcast-OSSE fork repo (non-package files)
+model/docs/GenCast_1p0deg_Mini_ENS_scorecard.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/GenCast_1p0deg_Mini_ENS_scorecard.png	0d63ccb9b8ec6249669bb2e11d298c67	graphcast-OSSE fork repo (non-package files)
+model/docs/cloud_vm_setup.md	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/cloud_vm_setup.md	3c73f25bb34cd9686939b4bcbc036645	graphcast-OSSE fork repo (non-package files)
+model/docs/local_runtime_popup_1.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/local_runtime_popup_1.png	a3066282d36ba1c28f40172e39e6f2a1	graphcast-OSSE fork repo (non-package files)
+model/docs/local_runtime_popup_2.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/local_runtime_popup_2.png	491e1ac8d330643c85ed3bcf1199ef45	graphcast-OSSE fork repo (non-package files)
+model/docs/local_runtime_url.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/local_runtime_url.png	347a7c5928a0fd59c8c1e61c5a22ae8e	graphcast-OSSE fork repo (non-package files)
+model/docs/project.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/project.png	a50166b7f95227e22c0019e6b5038f65	graphcast-OSSE fork repo (non-package files)
+model/docs/provision_tpu.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/provision_tpu.png	907d75f193e04ea179b7492ef3ed4a7b	graphcast-OSSE fork repo (non-package files)
+model/docs/tpu_types.png	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/docs/tpu_types.png	8b627300ba6a7c59e0ee24fea481d327	graphcast-OSSE fork repo (non-package files)
+model/gencast_demo_cloud_vm.ipynb	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/gencast_demo_cloud_vm.ipynb	33686d83a7caeabd2fe8911612f6e875	graphcast-OSSE fork repo (non-package files)
+model/gencast_mini_demo.ipynb	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/gencast_mini_demo.ipynb	457ec38634f599724f5123b5b858c003	graphcast-OSSE fork repo (non-package files)
+model/graphcast/__init__.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/__init__.py	d41d8cd98f00b204e9800998ecf8427e	as-run package copy from GC-DETER-2023/control
+model/graphcast/autoregressive.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/autoregressive.py	c9d08db4b523b453c04cf726fe7b12e4	as-run package copy from GC-DETER-2023/control
+model/graphcast/casting.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/casting.py	bb0407454afa671894678cd0f21062a0	as-run package copy from GC-DETER-2023/control
+model/graphcast/checkpoint.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/checkpoint.py	79f2129ff21b91e88f37c5b1e0ca256d	as-run package copy from GC-DETER-2023/control
+model/graphcast/checkpoint_test.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/checkpoint_test.py	97de688edf343d1d03a0fd95f5146f71	as-run package copy from GC-DETER-2023/control
+model/graphcast/data_utils.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/data_utils.py	174ef8312b8da4c4bf2ef953e30b7a0e	as-run package copy from GC-DETER-2023/control
+model/graphcast/data_utils_test.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/data_utils_test.py	4743c168f6f5567cb948000a4af2a117	as-run package copy from GC-DETER-2023/control
+model/graphcast/deep_typed_graph_net.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/deep_typed_graph_net.py	77e65cd373922bbe6f10b312d8e53bf1	as-run package copy from GC-DETER-2023/control
+model/graphcast/denoiser.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/denoiser.py	d713db02fdb9a742d47b2f9aa5ea93e5	as-run package copy from GC-DETER-2023/control
+model/graphcast/denoisers_base.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/denoisers_base.py	097feedda2dedead97cd47f7d2ce45b1	as-run package copy from GC-DETER-2023/control
+model/graphcast/dpm_solver_plus_plus_2s.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/dpm_solver_plus_plus_2s.py	a265bd58ffcec5cc904970d25a3c4af5	as-run package copy from GC-DETER-2023/control
+model/graphcast/gencast.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/gencast.py	4e1c4ec4871364608e4866f8d16c2b15	as-run package copy from GC-DETER-2023/control
+model/graphcast/graphcast.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/graphcast.py	f2af8c04a3fee7cbef88050623b685e6	as-run package copy from GC-DETER-2023/control
+model/graphcast/grid_mesh_connectivity.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/grid_mesh_connectivity.py	8149aab422badb2a22315e47116fb25a	as-run package copy from GC-DETER-2023/control
+model/graphcast/grid_mesh_connectivity_test.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/grid_mesh_connectivity_test.py	5e9d6f878481dd0e60a71a1b9f74303e	as-run package copy from GC-DETER-2023/control
+model/graphcast/icosahedral_mesh.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/icosahedral_mesh.py	bc596f14bfd0459239e6239935ab9672	as-run package copy from GC-DETER-2023/control
+model/graphcast/icosahedral_mesh_test.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/icosahedral_mesh_test.py	57a1c244b81d753b5ee14cf1afc17f38	as-run package copy from GC-DETER-2023/control
+model/graphcast/losses.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/losses.py	1328382d4189cd9b02e3960258b29444	as-run package copy from GC-DETER-2023/control
+model/graphcast/mlp.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/mlp.py	c01c6feb35320564193934d2a35c6ee8	as-run package copy from GC-DETER-2023/control
+model/graphcast/model_utils.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/model_utils.py	69b876740e2d40982108f70cda1c8f75	as-run package copy from GC-DETER-2023/control
+model/graphcast/nan_cleaning.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/nan_cleaning.py	257567738793a0fe0f407af7c580ac44	as-run package copy from GC-DETER-2023/control
+model/graphcast/normalization.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/normalization.py	42567d10b5ad4d01070ec34d45ec94ce	as-run package copy from GC-DETER-2023/control
+model/graphcast/predictor_base.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/predictor_base.py	e401cfe11bde4be9be5a153166339cfe	as-run package copy from GC-DETER-2023/control
+model/graphcast/rollout.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/rollout.py	9d6639cf9832b5b2c57d27ef92c904dc	as-run package copy from GC-DETER-2023/control
+model/graphcast/samplers_base.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/samplers_base.py	e1289a34b279749dd61a7965138e81bb	as-run package copy from GC-DETER-2023/control
+model/graphcast/samplers_utils.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/samplers_utils.py	1fd47ef37a1116bea0d456e3cc022440	as-run package copy from GC-DETER-2023/control
+model/graphcast/solar_radiation.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/solar_radiation.py	48aa1b850961593322417154fb58f1b6	as-run package copy from GC-DETER-2023/control
+model/graphcast/solar_radiation_test.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/solar_radiation_test.py	5423edcbfc7f8b8b0576a7fcea5cc479	as-run package copy from GC-DETER-2023/control
+model/graphcast/sparse_transformer.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/sparse_transformer.py	1699b5c6d79009909b95dab578b12a59	as-run package copy from GC-DETER-2023/control
+model/graphcast/sparse_transformer_utils.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/sparse_transformer_utils.py	74cb004af51ab202807c44934ad7caf3	as-run package copy from GC-DETER-2023/control
+model/graphcast/transformer.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/transformer.py	3fd4098d478ccb5d4833c37444ee9a6d	as-run package copy from GC-DETER-2023/control
+model/graphcast/typed_graph.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/typed_graph.py	64d930beba2a6696e63b8f76f720a1e2	as-run package copy from GC-DETER-2023/control
+model/graphcast/typed_graph_net.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/typed_graph_net.py	452a5d86bb6be68a7bb622b08e884a2e	as-run package copy from GC-DETER-2023/control
+model/graphcast/xarray_jax.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/xarray_jax.py	d46b551f0c60b4b68514f4d60d4d797d	as-run package copy from GC-DETER-2023/control
+model/graphcast/xarray_jax_test.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/xarray_jax_test.py	43cf0f1eae2361995fbd2461807e5961	as-run package copy from GC-DETER-2023/control
+model/graphcast/xarray_tree.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/xarray_tree.py	b0ed9f8305890708462e8dcc9aed1a65	as-run package copy from GC-DETER-2023/control
+model/graphcast/xarray_tree_test.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/control/graphcast/xarray_tree_test.py	5c00ebdecc82672bf10380be76f82e6f	as-run package copy from GC-DETER-2023/control
+model/graphcast_demo.ipynb	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/graphcast_demo.ipynb	771b8155867568703ea30a23706d5b92	graphcast-OSSE fork repo (non-package files)
+model/setup.py	/umbc/rs/pi_halem/users/yashd1/GraphCast/graphcast-OSSE/setup.py	ce832ab55fcf810a5feaa201d51092b8	graphcast-OSSE fork repo (non-package files)
+preprocessing/build_ic_feb2023.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/build_ic_feb2023.py	492f0986f46480105f5e6490cf4a89d2	
+preprocessing/download_era5_37level_feb2023.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/download_era5_37level_feb2023.py	165b310bb96770ee651b395d2974a22c	
+preprocessing/download_era5_ic_extras_feb2023.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/download_era5_ic_extras_feb2023.py	a9965a625731c9785fb78f400233e41d	
+preprocessing/download_era5_ic_surface_feb2023.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/download_era5_ic_surface_feb2023.py	08665884be01bff7239c782119afa679	
+preprocessing/download_era5_q_feb2023.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/download_era5_q_feb2023.py	b9def239035a0ea0773500c0ff60a090	
+preprocessing/prepare_truth_feb2023.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/prepare_truth_feb2023.py	169f1ef0058e11ebbe22a5a6b17e62d9	
+preprocessing/shared/build_land_ocean_mask.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/build_land_ocean_mask.py	35d9e7759c5db57a6f5502fc6e10a4f2	parent Graphcast-full/ script referenced by GC-DETER-2023
+preprocessing/shared/build_terrain_mask.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/build_terrain_mask.py	4ef9eca67538ff4943694642801461d3	parent Graphcast-full/ script referenced by GC-DETER-2023
+preprocessing/shared/download_era5_37level.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/download_era5_37level.py	dccc1c82effd15668cbd7474de9e2c81	parent Graphcast-full/ script referenced by GC-DETER-2023
+preprocessing/shared/prepare_truth.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/prepare_truth.py	37cc987f880b8a11afbefdc492ccda2b	parent Graphcast-full/ script referenced by GC-DETER-2023
+preprocessing/shared/setup_ref.py	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/setup_ref.py	ce832ab55fcf810a5feaa201d51092b8	parent Graphcast-full/ script referenced by GC-DETER-2023
+preprocessing/slurm/run_build_ic_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/run_build_ic_feb2023.sbatch	6dc78bd95ba3aa93866eb9d985fab450	
+preprocessing/slurm/run_dl_era5_37level_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/run_dl_era5_37level_feb2023.sbatch	cc42a2c2d4d8552360c09e69a515e75a	
+preprocessing/slurm/run_dl_era5_q_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/run_dl_era5_q_feb2023.sbatch	f9b1e5ca24cb320c75016be4d11b181d	
+preprocessing/slurm/run_dl_ic_extras_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/run_dl_ic_extras_feb2023.sbatch	07b9cf16a58e3607e04c4b1aea6d4e60	
+preprocessing/slurm/run_dl_ic_surface_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/run_dl_ic_surface_feb2023.sbatch	01d6accb7157eeed5beae0da6666c2f1	
+preprocessing/slurm/run_prepare_truth_feb2023.sbatch	/umbc/rs/pi_halem/users/yashd1/Graphcast-full/GC-DETER-2023/slurm/run_prepare_truth_feb2023.sbatch	d3d9e3fdf2aa2426a1b473bff863021f	

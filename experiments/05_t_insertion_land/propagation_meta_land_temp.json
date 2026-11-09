@@ -1,0 +1,16 @@
+{
+  "exp_name": "land_temp",
+  "ins_type": "temp",
+  "var_label": "T @ 500 hPa (K)",
+  "vmax": 15.7,
+  "day_labels": [
+    "First Injection",
+    "Day 45",
+    "Day 60"
+  ],
+  "shape": [
+    3,
+    721,
+    1440
+  ]
+}

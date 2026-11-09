@@ -1,0 +1,23 @@
+# Large data / model artifacts are NOT tracked (see README "Data & weights")
+*.nc
+*.grib
+*.grib2
+*.idx
+*.gcidx
+*.zarr/
+*.npz
+*.npy
+*.pt
+*.ckpt
+*.tar
+*.h5
+*.hdf5
+output/
+outputs/
+full_predictions/
+logs/
+__pycache__/
+*.pyc
+*.egg-info/
+.mplcache*/
+.cdsapirc

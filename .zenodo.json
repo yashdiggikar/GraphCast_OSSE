@@ -1,0 +1,32 @@
+{
+  "title": "GraphCast_OSSE: truth-insertion OSSE framework for Google DeepMind GraphCast (0.25 deg, 37 levels)",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "description": "<p>GraphCast_OSSE: truth-insertion OSSE framework for Google DeepMind GraphCast (0.25 deg, 37 levels).</p><p>Code release accompanying the manuscript <em>An AI-Based OSSE Framework to Evaluate Learned Physical Consistency: A Multi-Model Study Using FourCastNet, Aurora, Prithvi WxC, and GraphCast</em> (Diggikar, Halem, and Raman; submitted to AGU <em>Journal of Geophysical Research: Machine Learning and Computation</em>).</p>",
+  "creators": [
+    {
+      "name": "Diggikar, Yash",
+      "affiliation": "University of Maryland, Baltimore County, Baltimore, MD, USA",
+      "orcid": "0009-0004-8024-3279"
+    },
+    {
+      "name": "Halem, Milton",
+      "affiliation": "University of Maryland, Baltimore County, Baltimore, MD, USA",
+      "orcid": "0000-0002-5614-3612"
+    },
+    {
+      "name": "Raman, Aishwarya",
+      "affiliation": "Earth Sciences Division, NASA Ames Research Center, Moffett Field, CA, USA",
+      "orcid": "0009-0003-3973-4167"
+    }
+  ],
+  "keywords": [
+    "OSSE",
+    "data assimilation",
+    "truth insertion",
+    "AI weather prediction",
+    "machine learning"
+  ],
+  "notes": "Model weights and input/verification data (ERA5, MERRA-2) are not included; see README for sources."
+}

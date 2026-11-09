@@ -1,0 +1,16 @@
+GraphCast_OSSE
+Copyright 2026 Yash Diggikar
+
+This repository contains a modified copy of Google DeepMind GraphCast (https://github.com/google-deepmind/graphcast).
+The upstream code in ./model/ is distributed under its original license
+(model/LICENSE); all upstream copyright notices are retained.
+
+Modifications made for this study (observing-system-simulation-experiment truth insertion):
+  * Per-experiment as-run modified files are under experiments/*/model_overrides/
+    and mirror the paths under ./model/ that they replace.
+  * Every file's original location and checksum is listed in docs/PROVENANCE.tsv.
+  * Files marked "MODIFIED FOR RELEASE" in docs/PROVENANCE.tsv had personal API
+    credentials removed; no other release-time edits were made.
+
+Pretrained model weights are NOT redistributed here; obtain them from the upstream
+provider under the provider's own license terms (see README).

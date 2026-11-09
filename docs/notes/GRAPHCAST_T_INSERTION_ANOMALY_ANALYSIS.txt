@@ -1,0 +1,1034 @@
+================================================================================
+PHYSICAL INTERPRETATION — GraphCast (full, 0.25 deg, 37 levels) ANOMALOUS
+RESPONSE TO TEMPERATURE-ONLY TRUTH INSERTION, IN CROSS-MODEL CONTEXT
+Models compared: Aurora (Microsoft, 0.25 deg), FourCastNet v2 / FCN (NVIDIA,
+  0.25 deg), Prithvi WxC (NASA/IBM, 0.5 deg), GraphCast full (Google DeepMind,
+  0.25 deg, 37 pressure levels)
+Prepared from: this directory's own OSSE truth-insertion pipeline
+  (osse_z_global/, osse_t_global/, osse_uv_global/, control/); this
+  directory's own latitude-slice, terrain-class, and cloud-regime
+  stratifications of those same 3 runs (latslice_analysis/, added
+  2026-08-24, Section 9; terrain_analysis/ and cloud_analysis/, added
+  2026-08-25, Section 9.7 -- no new GPU experiments, just post-hoc masks on
+  the existing rollouts); and the other three models' results curated in
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/ (Aurora/coupling/values/,
+  FourCastNet/coupling/values/, Prithvi/coupling/values/,
+  Aurora/lat_bands/values/, Prithvi/lat_bands/values/, and the existing
+  written reports common/lat_band/PHYSICAL_ANALYSIS.txt,
+  common/terrain/PHYSICAL_ANALYSIS_T_Ins.txt, common/cloud/PHYSICAL_ANALYSIS_T_Ins.txt).
+  Note: Organized_results/GraphCast/ is a DIFFERENT, prior study (GraphCast-Small,
+  1 degree, thesis Ch.5) and is cited below only as independent supporting
+  context for a shared architectural signature, never as source data for the
+  full-resolution numbers in this report — all GraphCast full-model numbers here
+  come from this directory's own runs (osse_{z,t,uv}_global/out/,
+  latslice_analysis/, terrain_analysis/, cloud_analysis/) and
+  final_results/ / regime_analysis_results/.
+Prepared: 2026-08-24 (updated 2026-08-24 with Section 9's latitude-slice
+  stratification result)
+================================================================================
+
+
+EPISTEMIC STATUS OF THIS REPORT'S CLAIMS -- READ THIS FIRST
+--------------------------------------------------------------------------------
+This report deliberately separates two different kinds of claim, tagged
+throughout with one of the three labels below. Before using anything in this
+report in a manuscript, check the tag on the specific claim being cited --
+do not treat the whole report as uniformly "proven."
+
+  [ESTABLISHED]   Directly measured from this project's own data, checked
+                   against a real bug fix (the anomaly survived and got
+                   WORSE after fixing a genuine implementation defect, which
+                   is evidence against "this is a pipeline artifact"), and
+                   checked against the obvious alternative explanations
+                   (cadence, insertion mechanism, numerical crash). Safe to
+                   state as fact in a Results section.
+
+  [HYPOTHESIS]     A physically plausible, literature-grounded candidate
+                   explanation for an [ESTABLISHED] finding. NOT isolated by
+                   a controlled experiment -- Aurora, FCN, Prithvi, and
+                   GraphCast differ simultaneously in architecture, training
+                   data/truth source, resolution, vertical-level count, and
+                   even initial-condition date/season (Section 9 below), so
+                   any single explanatory factor is argued by consistency
+                   with theory and by analogy to independently-documented
+                   evidence, not by having varied one factor while holding
+                   the others fixed. Appropriate for a Discussion section,
+                   with hedging language ("consistent with," "plausibly
+                   explained by," "a candidate mechanism is..."), not a
+                   Results section, and not asserted as demonstrated fact.
+
+  [NEEDS FOLLOW-UP] An alternative or confounding explanation that has been
+                   identified but NOT yet ruled in or out by an experiment.
+                   Currently competes with, rather than supports, the
+                   [HYPOTHESIS] claims until the experiment in Section 8 is
+                   run. Do not present as a supporting factor without this
+                   caveat attached.
+
+AT-A-GLANCE CLAIM SUMMARY (see the cited section for full detail on each row)
+
+  Claim                                                    Status       Section
+  ------------------------------------------------------------------------------
+  GraphCast full's T-insertion degrades Z/U/V while         [ESTABLISHED]  3
+    Aurora/FCN/Prithvi's improves them
+  Bug-fix strengthened (not weakened) the anomaly           [ESTABLISHED]  2
+  Not explained by insertion cadence, mechanism, or crash   [ESTABLISHED]  4
+  GraphCast full's OWN Z-/UV-insertion behave normally      [ESTABLISHED]  3
+  T-insertion is the hardest direction for all 4 models     [HYPOTHESIS]   6
+    (quasi-geostrophic "central asymmetry")
+  Local GNN receptive field vs. global spectral/attention   [HYPOTHESIS]   5.1
+    receptive field explains the contrast
+  No learned geostrophic-adjustment mechanism -- Z-Ins/UV-  [ESTABLISHED,  9.2
+    Ins reproduce GraphCast-Small's equator-to-pole         IN-STUDY]
+    breakdown signature IN THIS STUDY's own full-res data
+  T-Ins fails at EVERY latitude slice (2N-60N), unlike      [ESTABLISHED]  9.1,
+    Z-Ins/UV-Ins's latitude-organised failure -- a within-                 9.4
+    study contrast, and unlike Aurora/Prithvi's own T-Ins
+    (positive at every slice they tested)
+  T-Ins ALSO fails at every terrain class (Land Low/Mod/     [ESTABLISHED]  9.7
+    High/Ocean/Polar) and every cloud regime (Clear/Cirrus/
+    Mixed/Opaque) -- 3rd and 4th independent stratification
+    axes confirming the failure is regime-universal, not
+    latitude-specific
+  WHY T-Ins fails everywhere while Z-/UV-Ins fail only in   [HYPOTHESIS]   9.3
+    the tropics (broader mechanism than Rossby number alone)
+  37 vs. 13-14 forced vertical levels explains the contrast [NEEDS         5.3
+                                                              FOLLOW-UP]
+  Realistic (correlated, calibrated) observation-error       [ESTABLISHED]  10
+    noise vs. exact truth barely changes T-Ins's failure or
+    UV-Ins's success -- rules out "unrealistically clean
+    signal" as the explanation
+  Cross-model comparison is confounded (data source,        [ESTABLISHED   11
+    resolution, IC date/season, training objective)         AS A CAVEAT]
+
+
+0. WHY THIS REPORT EXISTS
+--------------------------------------------------------------------------------
+This project's own 60-day OSSE truth-insertion study (control/ + osse_z_global/
++ osse_t_global/ + osse_uv_global/, see session_log.md for full provenance)
+found that hard-replacing temperature with ERA5 truth at all 37 native
+pressure levels, every 6 hours, from day 30 through day 60, catastrophically
+DEGRADES GraphCast's geopotential and wind fields relative to a free-running
+control -- rather than improving them, which is what the same experiment does
+in every one of the other three AI weather models this study is designed to
+be compared against. This report documents that finding in detail, verifies
+it is not a data-pipeline artifact, and explains it using GraphCast's
+published architecture, the quasi-geostrophic dynamical-balance literature,
+and independent supporting evidence already established in this research
+program's earlier GraphCast-Small study.
+
+
+1. EXPERIMENT DESIGN
+--------------------------------------------------------------------------------
+Each of the four models is run as a 60-day (240-step at 6-hourly cadence for
+GraphCast/Prithvi; 120-step at 12-hourly cadence for Aurora/FCN) free-running
+forecast from a January-2022 (GraphCast/Prithvi) or February-2023
+(Aurora/FCN) initial condition (Control), then re-run with a single
+dynamical field hard-replaced ("inserted") by its ERA5 (or MERRA-2, for
+Prithvi) truth value at every step from day 30 onward: temperature (T-Ins),
+wind U+V (Wind-Ins/UV-Ins), or geopotential/height (Geo-Ins/Z-Ins). No
+blending or damping is applied in any of the four models' insertion pipeline
+-- this is a hard, full-field overwrite in every case, confirmed directly in
+this project's own graphcast/rollout.py and, for the other three models, in
+fcn_inference/inf.py (which sets sfno_model.truth_ds directly) and the shared
+OSSE design documented in session_log.md Section 12.
+
+For this project's GraphCast-full runs specifically: truth is inserted at
+ALL 37 of the checkpoint's native pressure levels (not just the 13 levels
+that get subset out at save time), starting at 0-based step 120
+(lead = 726h = day 30.25), through step 239 (lead = 1440h = day 60), for
+temperature, geopotential, and u+v wind, each as its own independent
+experiment (osse_t_global/, osse_z_global/, osse_uv_global/), against the
+same free-running control/ baseline.
+
+The metric used throughout is the standard cross-variable "coupling" /
+"percent RMSE improvement" score:
+    pct_improvement(B) = 100 x (RMSE_control(B) - RMSE_insertion(B)) / RMSE_control(B)
+averaged over the mature phase (day 30-60) and, for the cross-model
+comparison table below, over pressure level -- positive = insertion made the
+non-inserted field B more accurate than the free-running control; negative =
+insertion made it LESS accurate.
+
+
+2. METHODOLOGICAL NOTE: A REAL BUG WAS FOUND AND FIXED BEFORE THESE NUMBERS
+   WERE PRODUCED -- THE ANOMALY SURVIVED THE FIX AND GOT STRONGER, NOT WEAKER
+--------------------------------------------------------------------------------
+Before trusting this result, a genuine implementation bug was found (by
+direct suspicion that the injected variable's own post-insertion RMSE should
+drop to ~0 and stay there, since it is literally ERA5 truth, but instead
+showed a period-4 sawtooth). Root cause: chunked_prediction_generator's
+internal JIT-recompilation-avoidance trick relabels each chunk's predictions
+with a fixed placeholder time coordinate (always chunk 0's lead times); the
+insertion code's spatial-alignment step (`reindex_like(..., method="nearest")`)
+was, as an unintended side effect, ALSO reindexing on that fake time
+coordinate, collapsing 3 of every 4 injected sub-steps onto a single stale
+truth value instead of their own. Fixed (pin truth's time coordinate to the
+prediction's before reindexing, in all three graphcast/rollout.py copies);
+reverified directly against the corrected output (0.0 mean abs diff between
+prediction and truth at every post-injection sub-step, not just 1-in-4).
+
+Critically for this report: fixing the bug made the T-insertion anomaly
+WORSE, not better. Under the bug, only 1-in-4 insertion events actually
+delivered the full "hard replace" shock (the other 3 got a smoother, stale
+repeat); post-fix, every single 6-hourly step delivers the full shock. The
+corrected geopotential degradation is -70.9% to -476.0% (mean -199.6%)
+across levels, versus -110% to -344% at its worst single level under the
+buggy run. This is strong internal evidence that the anomaly is a genuine
+response of the model to correctly-delivered, physically discontinuous
+forcing -- not an artifact of the (now-fixed) implementation defect.
+
+
+3. QUANTITATIVE RESULT: THE CROSS-MODEL CONTRAST                  [ESTABLISHED]
+--------------------------------------------------------------------------------
+Mature-phase (day 30-60), mean %-RMSE-improvement on the NON-inserted fields
+under TEMPERATURE insertion:
+
+  Model                  T-Ins -> U          T-Ins -> V          T-Ins -> Z/H
+  ------------------------------------------------------------------------------
+  Aurora                 +38.56%              +21.43%              +52.99%
+  FourCastNet v2         +18.04%              +16.02%              +29.94%
+  Prithvi WxC            +12.65%              + 1.45%              +65.33%
+  GraphCast full (THIS)  -195.72% (range      -212.55% (range      -199.58% (range
+                          -753.15% to -34.13%)  -535.73% to -58.84%)  -475.98% to -70.93%)
+
+(Aurora/FCN/Prithvi numbers: Organized_results/{Aurora,FourCastNet,Prithvi}/
+coupling/values/*_coupling_matrix.csv, insertion_run=temp_ins, trivial=False
+rows. GraphCast full numbers: this directory's
+osse_t_global/out/compare_t_global_pct_improvement.csv, averaged per variable
+across all 13 saved pressure levels.)
+
+Every other model shows temperature insertion HELPING its wind and mass
+fields, by a modest-to-large margin. GraphCast full is the only one of the
+four where the SAME kind of experiment HURTS them, and hurts them
+severely -- by one to two orders of magnitude in the wrong direction, not
+merely "less improvement."
+
+For contrast, GraphCast full's OWN response to the other two insertion
+experiments is unremarkable and physically sane (this project's own
+final_results/):
+
+  Z-insertion  -> T:  mean +1.47%  (range -50.2% to +69.1%, mixed but modest)
+  Z-insertion  -> U:  mean +14.55% (range  +2.2% to +36.3%, uniformly positive)
+  Z-insertion  -> V:  mean  +6.21% (range  -2.1% to +13.7%, mildly positive)
+  UV-insertion -> T:  mean +30.65% (range -17.5% to +48.2%, mostly positive)
+  UV-insertion -> Z:  mean +52.54% (range  -9.2% to +67.0%, mostly positive)
+
+GraphCast full's own geopotential- and wind-insertion experiments look
+qualitatively like Aurora's/FCN's/Prithvi's T-insertion results: mild,
+mostly-positive cross-variable coupling. The pathology is not "GraphCast is
+unstable under insertion" in general -- it is specific to inserting
+TEMPERATURE. This specificity is itself the most important clue to the
+mechanism (Section 5).
+
+
+4. CONFOUNDS RULED OUT                                             [ESTABLISHED]
+--------------------------------------------------------------------------------
+4.1 Not the injection bug. Section 2 above; the anomaly survives and
+    strengthens after the fix, verified against directly-checked output.
+
+4.2 Not insertion cadence. Aurora and FCN insert every 12h (120 events over
+    the 60-day run); GraphCast and Prithvi insert every 6h (240 events) --
+    twice as often. If frequency alone explained GraphCast's blowup, Prithvi
+    (identical 6h cadence) should show the same pathology. It does not
+    (T-Ins -> U/V/H all positive, Section 3). Cadence is not the driver.
+
+4.3 Not insertion mechanism. All four models use the same hard-replace,
+    no-blending design -- confirmed directly in this project's own
+    graphcast/rollout.py and in fcn_inference/inf.py (which sets
+    sfno_model.truth_ds directly, no damping parameter), and documented as
+    the shared OSSE convention across CC_aurora/, prithviOSSE/,
+    fcn_inference/, and this project (session_log.md Section 12). This is a
+    genuinely apples-to-apples comparison of insertion STYLE; only the
+    receiving model differs.
+
+4.4 Not a crash, NaN, or discontinuity artifact. Directly inspected Z500
+    field values at the injection boundary versus at the end of the run
+    (session_log.md Section 14): at chunk_0030 (steps 121-124, the first
+    insertion chunk), T-insertion's Z500 (mean 53722 m^2/s^2, range
+    46878-58299) is nearly identical to control's (mean 53714, range
+    46796-58267) -- both physically sane. By chunk_0059 (steps 237-240, the
+    final chunk), T-insertion's Z500 has drifted far outside the
+    climatological range (mean 60175, range 35643-79021) while control
+    remains sane (mean 54068, range 42525-59987). No NaN/Inf anywhere. This
+    is smooth, monotonic-looking divergence over ~30 days of continued
+    insertion, not a numerical failure -- consistent with an accumulating
+    physical instability, not a bug.
+
+
+5. CANDIDATE EXPLANATIONS FOR THE [ESTABLISHED] FINDING            [HYPOTHESIS]
+--------------------------------------------------------------------------------
+IMPORTANT: everything in this section is [HYPOTHESIS] or, for 5.3,
+[NEEDS FOLLOW-UP] -- see the epistemic-status legend at the top of this
+report. Aurora, FCN, Prithvi, and GraphCast are four different systems that
+differ simultaneously in architecture, training data/truth source (ERA5 for
+three, MERRA-2 for Prithvi), horizontal resolution, native vertical-level
+count, and initial-condition date/season (Section 9). This section proposes
+three physically plausible, literature-consistent factors that COULD explain
+the Section 3 contrast, in decreasing order of how well-supported each one
+currently is -- but none of them has been isolated by a controlled
+experiment that holds the other factors fixed. Do not present this section
+in a manuscript as "the explanation" without the hedging language used
+throughout it, and without running (or explicitly flagging as future work)
+the Section 8 experiments that would test each one directly.
+
+5.1 [HYPOTHESIS] Local message-passing versus global receptive field per
+    forward step.
+
+GraphCast's encode-process-decode graph neural network (Lam et al., 2023,
+Science / arXiv:2212.12794) represents the sphere via a fixed icosahedral
+multi-mesh and propagates information through a fixed number (16) of
+message-passing rounds, each of which moves information exactly one
+mesh-edge hop. A single 6-hour forward pass therefore has a genuinely LOCAL,
+finite spatial receptive field -- information from one grid point cannot,
+within a single step, influence points more than ~16 mesh-edges away.
+
+The other three models all have architecturally much larger, often-global
+receptive fields per single forward pass:
+  - FourCastNet v2 (Pathak et al., 2022, arXiv:2202.11214) is a spherical
+    Fourier neural operator: its core operation is a spherical-harmonic
+    transform, a global, spectrally band-limited representation. Any
+    small-scale discontinuity introduced by hard insertion is immediately
+    projected onto global basis functions, and truncation of high
+    wavenumbers acts as an implicit low-pass filter -- shock content is
+    damped on the very first forward pass, before it can compound
+    autoregressively. This is consistent with FCN showing the SMALLEST
+    positive T-Ins coupling of the three well-behaved models (+18.0% U,
+    +16.0% V) -- strong smoothing damps both the harm GraphCast shows and
+    the benefit Aurora/Prithvi extract.
+  - Aurora (Bodnar et al., 2024/2025, Nature / arXiv:2405.13063) uses a
+    Swin-Transformer windowed-attention backbone with a 3D Perceiver-style
+    encoder/decoder; windowed attention (with shifting) achieves a much
+    larger effective receptive field per step than a fixed 16-hop mesh, and
+    the model's rollout-aware, multi-source foundation-model training gives
+    it the smoothest, most terrain-consistent cross-variable response of
+    any of the four models in this whole research program (see Section 6).
+  - Prithvi WxC (Schmude et al., 2024, arXiv:2409.13598) is a patch-embedded
+    Vision Transformer pretrained with a masked-reconstruction-plus-
+    forecasting objective. Masked-autoencoder pretraining specifically
+    trains the network to infer plausible values for one patch/variable
+    FROM the surrounding spatial and cross-variable context -- an objective
+    that inherently teaches a soft, denoising-like consistency behavior
+    across co-located fields, which plausibly explains why Prithvi's
+    coupling stays weakly positive (never catastrophically negative) even
+    though its own wind pathway is independently documented (Organized_results
+    common/lat_band/PHYSICAL_ANALYSIS.txt Section 1.4) as its weakest
+    learned balance relation of the four models.
+
+GraphCast alone has neither a global spectral operator nor an
+attention-based averaging mechanism. A temperature discontinuity introduced
+simultaneously at every grid point and all 37 levels is exactly the kind of
+input its local, convolution-like operators have no architectural means to
+damp within a single step.
+
+Caveat: this is an architectural plausibility argument, not a demonstrated
+causal mechanism. No experiment in this report varies receptive-field size
+while holding everything else (training data, resolution, vertical levels)
+fixed -- the four models simply happen to differ this way. A rigorous test
+would require, e.g., an ablated GraphCast variant with a wider message-
+passing radius, which has not been run.
+
+5.2 [HYPOTHESIS, WITH INDEPENDENT SUPPORTING EVIDENCE] No learned
+    geostrophic-adjustment mechanism -- independently documented in this
+    research program's own earlier GraphCast-Small study.
+
+This is not a new speculation; it is a previously-established, independent
+finding from a DIFFERENT GraphCast configuration (1 degree, thesis Ch.5
+study, Organized_results/GraphCast/ and common/lat_band/PHYSICAL_ANALYSIS.txt
+-- cited here only as prior supporting context, not as source data for the
+numbers in Section 3). That report found, under wind insertion at the
+equator, GraphCast-Small's T500 response was -50.2% (more than doubling
+error) at 2 deg N versus +58.9% at 40 deg N -- "the same model that benefits
+enormously from wind information at the jet-stream latitudes is actively
+damaged by the same kind of information at the equator," and concluded the
+model "has no mechanism to safely 'ignore' or down-weight" information that
+is inconsistent with the balance relationship it has learned, unlike a true
+dynamical system, in which a locally-forced imbalance should radiate away as
+inertia-gravity waves (the classical Rossby/Charney geostrophic-adjustment
+problem; Charney, 1947/1948) and leave the slow, balanced flow largely
+unaffected.
+
+The same report's cloud-regime companion analysis
+(Organized_results/common/cloud/PHYSICAL_ANALYSIS_T_Ins.txt Section 1.4)
+independently found, for GraphCast-Small's T-insertion specifically, a
+TEMPORAL sign reversal: Z500's response is positive in every cloud regime at
+the Adjustment phase (day 30-40) but goes negative in three of four regimes
+by the Mature phase (day 40-60) -- "the insertion helps GraphCast's
+geopotential field in the short term and then actively degrades it after
+continued exposure ... GraphCast's short-term gains from insertion are not
+dynamically 'locked in' by its own forward evolution, and tend to decay or
+reverse the longer the forecast continues."
+
+Both of these are independent, previously-existing observations of the same
+qualitative signature -- gains from forced information are not durable,
+because the model has no mechanism to reconcile information that violates
+its learned balance -- from a DIFFERENT GraphCast checkpoint/resolution
+under a DIFFERENT insertion experiment (wind, not temperature). Their
+recurrence here, now at full severity under 37-level global temperature
+insertion in the full-resolution checkpoint, is consistent with (not proof
+of) this being a genuine, reproducible property of GraphCast's architecture
+and training, rather than a one-off artifact of this particular run.
+
+Caveat, UPDATED after running Section 8.1 (see Section 9 for full detail):
+this is now the best-supported of the three factors for Z-INSERTION and
+UV-INSERTION specifically -- Section 9.2 reproduces the exact equator-to-
+pole breakdown signature IN-STUDY, in this same full-resolution checkpoint,
+under two different insertion experiments, not just by analogy to a
+different GraphCast configuration. That is a materially stronger standard
+of evidence than existed when this paragraph was first written. However,
+Section 9.1 shows this specific Rossby-number mechanism does NOT explain
+the T-INSERTION failure this report is centrally about -- T-Ins degrades
+every latitude slice tested (2N through 60N), including deep extratropics
+where Z-Ins/UV-Ins recover fully. So: "no learned adjustment mechanism" as
+a general architectural property is now better-supported than before: for
+T-insertion specifically, "purely a Rossby-number/tropical phenomenon" is
+RULED OUT by 9.1, and a broader-than-tropics failure mode is implicated
+instead (see Section 9.3's reconciliation and Section 6's "central
+asymmetry" argument, which predicts T-to-wind/mass inversion should be hard
+at every latitude, not just where f -> 0).
+
+5.3 [NEEDS FOLLOW-UP -- CURRENTLY AN UNRESOLVED ALTERNATIVE EXPLANATION, NOT
+    A CONFIRMED CONTRIBUTING FACTOR] Vertical resolution: 37 levels versus
+    13-14.
+
+This is a checkable configuration fact, not inference. Aurora's and
+FourCastNet v2's coupling pipelines both operate on the standard 13-level
+set (LEVELS = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150, 100,
+50], confirmed directly in Organized_results/Aurora/coupling/scripts/
+compute_aurora_coupling.py and .../FourCastNet/coupling/scripts/
+compute_coupling.py); Prithvi WxC uses 14 native MERRA-2 levels
+(Organized_results/map.md Section 3.5). Full GraphCast -- the entire
+distinguishing feature of the "full" checkpoint over "small"/"operational"
+variants -- runs at 37 native pressure levels, and this project's insertion
+hard-replaces truth at all 37 simultaneously, every 6 hours (confirmed in
+this directory's checkpoint inspection, session_log.md Section 3). That is
+roughly 2.6-3x the vertical degrees of freedom being forced at once compared
+to what the other three models' own T-insertion experiments perturb. More
+vertical DOF forced abruptly creates more opportunity for a locally
+unphysical lapse-rate/thickness profile between adjacent levels -- exactly
+the kind of high-vertical-wavenumber content a local, non-spectral
+architecture (Section 5.1) has no mechanism to filter, compounding across
+120 consecutive 6-hourly insertion steps.
+
+Caveat -- read this before citing 5.3 as a "contributing factor": as
+currently written, this is presented as compounding with 5.1/5.2, but it is
+equally possible that vertical resolution is doing most or all of the work
+by itself, independent of anything architectural -- i.e. that hard-replacing
+37 levels of ANY model (Aurora, FCN, Prithvi included, if they had a
+37-level checkpoint) would produce the same catastrophic degradation, which
+would mean the headline finding is really "forcing more vertical DOF than a
+model can reconcile is destabilizing," not "GraphCast's architecture is
+uniquely fragile." These two explanations make different, testable
+predictions and have NOT been distinguished by any experiment in this
+report. The ablation in Section 8.3 (hard-replace only 13 of GraphCast's 37
+levels, holding architecture fixed) is the direct test: if the blowup
+persists, 5.3 is ruled OUT as the primary driver and 5.1/5.2 stand on their
+own; if the blowup is substantially smaller, 5.3 is at least a major
+contributing factor and the "GraphCast's architecture is uniquely fragile"
+framing needs to be softened to "GraphCast's architecture is uniquely
+fragile TO the higher-vertical-DOF forcing its full checkpoint invites."
+Until this ablation is run, treat 5.3 as an open, competing hypothesis, not
+a settled supporting factor.
+
+
+6. WHY TEMPERATURE SPECIFICALLY, NOT GEOPOTENTIAL OR WIND               [HYPOTHESIS]
+--------------------------------------------------------------------------------
+GraphCast full's own Z-insertion and UV-insertion results (Section 3) are
+mild and mostly positive -- qualitatively like every other model's numbers.
+The failure is specific to the T-insertion DIRECTION, and this is exactly
+what quasi-geostrophic theory predicts (already established as the "central
+asymmetry" in this program's earlier work,
+Organized_results/common/lat_band/PHYSICAL_ANALYSIS.txt Section 1.1):
+recovering the mass/wind field FROM a temperature anomaly is the harder,
+ill-posed inverse problem -- in the continuous case it requires
+differentiating a (noisy, discretely sampled) thermal field and solving a
+global elliptic (Poisson-type) inversion for the rotational wind, a
+computation sensitive to boundary conditions and to exactly the part of the
+flow (the divergent/ageostrophic component) that a pure balance relation
+cannot supply. Recovering mass FROM wind, by contrast, is a local, algebraic
+diagnostic (f*v = (1/rho) dp/dx) -- which is why Wind/UV-insertion is the
+easy, robust direction for every model in this whole four-model program,
+GraphCast full included (its own UV-insertion -> Z coupling is +52.5% mean,
+in line with the other three models' T-Ins-> Z numbers). Every model
+attempts the same hard T-to-wind/mass inversion under T-insertion; only
+GraphCast lacks any of the three mitigating properties in Section 5 to keep
+that harder inversion's errors from compounding into an outright divergence
+rather than merely a smaller gain.
+
+
+7. MODEL-BY-MODEL SUMMARY            [NUMBERS ESTABLISHED, INTERPRETATION HYPOTHESIS]
+--------------------------------------------------------------------------------
+The %-improvement figures below are [ESTABLISHED] (Section 3). The
+parenthetical architectural explanations attached to each model are
+[HYPOTHESIS] (Section 5) -- read as "consistent with," not "caused by."
+AURORA: Best-behaved under T-insertion of the three non-GraphCast models --
+  +38.6% U, +21.4% V, +53.0% Z, all positive, no sign flips. Consistent with
+  a large-receptive-field transformer architecture plus rollout-aware
+  foundation-model training (Section 5.1).
+
+FOURCASTNET v2: Smallest-magnitude positive response (+18.0% U, +16.0% V,
+  +29.9% Z) of the three well-behaved models -- consistent with its global
+  spectral operator strongly damping BOTH harmful and helpful information
+  content from a hard, spatially discontinuous insertion (Section 5.1).
+
+PRITHVI WxC: Positive but weak wind response (+12.6% U, only +1.5% V),
+  strong mass-field response (+65.3% H) -- its independently-documented
+  weak wind/dynamical balance pathway (Organized_results common/lat_band/
+  PHYSICAL_ANALYSIS.txt Section 1.4) shows up here as a muted rather than a
+  reversed response; masked-reconstruction pretraining plausibly provides
+  just enough implicit cross-variable consistency to prevent outright
+  divergence even where the learned wind relation is weak (Section 5.1).
+
+GRAPHCAST (full, this study): The only model where T-insertion HARMS the
+  non-inserted fields, severely and at every saved pressure level (-195.7%
+  U, -212.6% V, -199.6% Z mean). GraphCast full's OWN Z- and UV-insertion
+  results are unremarkable and positive, like the other models' T-insertion
+  results -- the failure is specific to the T-to-wind/mass inversion
+  direction (Section 6), amplified by GraphCast's local message-passing
+  architecture (Section 5.1), its previously-documented absence of a
+  learned balance-restoring mechanism (Section 5.2, independently confirmed
+  in a different GraphCast configuration under a different insertion
+  experiment), and the full checkpoint's substantially finer vertical
+  resolution than any of the other three models' own insertion experiments
+  (Section 5.3).
+
+
+8. RECOMMENDED FOLLOW-UP EXPERIMENTS (NOT YET DONE, FOR STRENGTHENING THIS
+   FINDING BEFORE PUBLICATION)
+--------------------------------------------------------------------------------
+8.1 [DONE -- see Section 9] Latitude-slice stratification of the
+    full-resolution result, using the same 4-slice (2N/14N/40N/60N, +-5deg
+    NH) machinery already applied to Aurora/FCN/Prithvi. Completed
+    2026-08-24 for all three of this project's insertion experiments
+    (T-Ins, Z-Ins, UV-Ins) at 300/500/1000 hPa. Result: NOT what either
+    branch of the original framing predicted exactly -- see Section 9 for
+    the full breakdown and its effect on Section 5's claims.
+
+8.2 [STILL OPEN -- do not confuse with Section 10's completed check] A
+    damped/partial-nudging T-insertion variant (blend toward truth with some
+    relaxation coefficient alpha < 1, or reduce cadence to 12h to match
+    Aurora/FCN) instead of a hard full-field replacement. If a softer nudge
+    avoids the blowup, that is direct evidence for the Charney/Rossby
+    geostrophic-adjustment framing specifically -- the model can absorb a
+    small, gradual perturbation but not a full discontinuity. This variant
+    is already flagged as an open next step in session_log.md Section 14.
+    NOTE: this is a WEAKER-correction-strength question, distinct from the
+    perturbed-truth (realistic-noise-vs-exact-truth, same full correction
+    strength) question already answered in Section 10 -- completing Section
+    10 does not address this item.
+
+8.3 A vertical-resolution ablation: repeat T-insertion but hard-replace only
+    the same 13 levels Aurora/FCN use (leaving GraphCast's other 24 native
+    levels to evolve freely from the model's own state, then reconciled
+    however the model's own dynamics handle a partially-forced column).
+    This would isolate Section 5.3's vertical-DOF hypothesis from Section
+    5.1/5.2's architecture hypothesis -- if the blowup persists even with
+    only 13 levels forced, vertical resolution is not the primary driver
+    and the architectural/no-adjustment-mechanism explanation stands alone;
+    if it is substantially reduced, vertical DOF is a meaningful
+    contributing factor, not just architecture.
+
+
+9. LATITUDE-SLICE STRATIFICATION OF THE FULL-RESOLUTION RESULT (§8.1
+   FOLLOW-UP, COMPLETED 2026-08-24)                    [ESTABLISHED, IN-STUDY]
+--------------------------------------------------------------------------------
+9.0 Method.
+
+Computed the same cosine-latitude-weighted RMSE metric used throughout this
+report, but restricted to 4 narrow (+-5deg) Northern-Hemisphere latitude
+bands centred on 2 deg N, 14 deg N, 40 deg N, 60 deg N -- the identical slice
+definition used in the existing cross-model latitude-slice study
+(Organized_results/*/lat_bands/scripts/section_*_latslice_analysis.py) -- at
+3 pressure levels (300, 500, 1000 hPa), for all three of this project's
+insertion experiments (control/, osse_t_global/, osse_z_global/,
+osse_uv_global/). New script: compute_latslice_rmse.py (this directory),
+which reuses compute_rmse.py's streaming chunk/ERA5-loading approach, just
+reducing over 4 narrow latitude bands instead of the whole globe. Verified
+against a single-chunk smoke test before the full run (correct row count,
+physically sane T500 RMSE ~0.3-0.5K at day 1, matching the original global
+RMSE sanity check in session_log.md Section 7). Run as 4 parallel SLURM
+batch jobs on chip-cpu (180056-180059, all COMPLETED, ~18 min each). Mature
+phase = day 30-60, same convention as the rest of this report. Full CSVs:
+latslice_analysis/{control,osse_t_global,osse_z_global,osse_uv_global}/*.csv
+and the combined summary latslice_analysis/latslice_pct_improvement_summary.csv.
+
+9.1 Result: T-insertion is negative at EVERY latitude slice, not just the
+    tropics -- this is new information, and it changes Section 5's picture.
+
+  T-INS -> cross-variable mature-phase %-improvement, GraphCast full:
+
+    Var  Level   2N       14N      40N      60N
+    U    300    -72.6%   -37.5%   -97.7%  -121.7%
+    U    500   -163.0%  -205.8%  -217.8%  -253.2%
+    U    1000  -225.9%   -28.5%   -15.2%   -82.8%
+    V    300   -290.0%  -249.7%  -136.1%  -127.0%
+    V    500   -469.2%  -267.7%  -144.4%  -200.2%
+    V    1000  -254.8%  -119.1%   -46.7%  -113.4%
+    Z    300   -175.2%  -261.4%   -55.4%   -62.7%
+    Z    500   -241.8%  -127.3%   -58.5%   -64.2%
+    Z    1000 -1320.5%  -738.6%  -151.2%  -250.9%
+    (T's own trivial self-insertion: 99.1-99.6% at every slice/level, as
+    expected for a hard truth replacement -- confirms the slice/level
+    machinery itself is working correctly.)
+
+Every single cell for U, V, and Z is negative -- including 60 deg N, deep in
+the extratropics where the Coriolis parameter is large and geostrophic
+balance should be at its most reliable. This directly answers the Section
+8.1 question: the T-insertion failure is NOT concentrated in the tropics
+(low Rossby number) the way GraphCast-Small's Wind-Ins failure was. It is
+essentially global. This favors the "no adjustment mechanism at any
+latitude" reading of Section 5.2 over a purely Rossby-number-localised
+reading -- but see 9.3 below, because Z-Ins and UV-Ins tell a DIFFERENT,
+cleanly latitude-organised story in this same dataset, which sharpens rather
+than simplifies the picture.
+
+9.2 Result: Z-insertion and UV-insertion, in contrast, reproduce the exact
+    equator-to-pole (Rossby-number) signature previously only documented for
+    GraphCast-Small -- now confirmed IN-STUDY, in the full-resolution model.
+
+  Z-INS -> T mature-phase %-improvement, GraphCast full:
+    Level   2N       14N      40N     60N
+    300   -194.5%  -156.4%   -51.7%    0.6%
+    500   -132.7%  -103.3%     2.5%    7.8%
+    1000   -67.3%   -38.5%     0.2%  -14.2%
+
+  UV-INS -> T mature-phase %-improvement, GraphCast full:
+    Level   2N       14N      40N     60N
+    300   -154.3%   -58.2%    68.6%   59.0%
+    500   -164.7%   -48.5%    68.8%   67.1%
+    1000   -98.3%   -43.4%    50.1%   15.9%
+
+  UV-INS -> Z mature-phase %-improvement, GraphCast full:
+    Level   2N       14N      40N     60N
+    300   -127.2%   -39.3%    81.0%   78.9%
+    500    -31.4%    19.0%    81.7%   76.1%
+    1000   -50.1%    23.2%    59.4%   59.9%
+
+Both experiments show a clean, monotonic-looking flip from strongly negative
+in the deep tropics (2N, 14N) to strongly positive by the midlatitudes
+(40N, 60N) -- textbook geostrophic/thermal-wind adjustment breakdown near
+the equator (f = 2*Omega*sin(lat) -> 0), qualitatively identical to the
+GraphCast-Small Wind-Ins finding already documented in
+Organized_results/common/lat_band/PHYSICAL_ANALYSIS.txt Section 1.3 (there:
+T500 response to Wind-Ins was -50.2% at 2N vs +58.9% at 40N). That finding
+was previously cited in this report (Section 5.2) only as supporting context
+from a DIFFERENT GraphCast configuration; it is now independently REPRODUCED
+within this study, in the full-resolution 37-level checkpoint, under two
+different insertion experiments (Z-Ins and UV-Ins). This upgrades Section
+5.2's evidentiary status for Z-Ins/UV-Ins specifically from "consistent with
+a prior study" to "reproduced in-study" -- a materially stronger claim.
+
+9.3 Reconciling 9.1 and 9.2: T-insertion is not simply "the tropical
+    pathology, but worse" -- it is a broader failure mode.
+
+If T-insertion's global negativity were just a more severe version of the
+same Rossby-number breakdown seen in Z-Ins/UV-Ins, it should still show SOME
+latitudinal organisation -- weaker degradation, or a flip to positive,
+by 40-60N. It does not: U/V/Z all remain strongly negative at 60N under
+T-Ins, in the same latitude band where Z-Ins and UV-Ins recover to +50% to
++82% improvement in the SAME experiment set, on the SAME model, SAME
+checkpoint, SAME 60-day window. This is a real within-study contrast, not
+an artifact of comparing different studies. It suggests T-insertion is
+triggering something beyond (or in addition to) the equatorial
+geostrophic-breakdown mechanism -- consistent with, and now more concretely
+motivating, Section 6's "central asymmetry" argument (recovering wind/mass
+FROM temperature is the fundamentally harder, ill-posed inversion direction,
+for every model, at every latitude) plus Section 5.3's still-unresolved
+vertical-DOF question. A plausible refined reading: the geostrophic/
+thermal-wind relation Z-Ins and UV-Ins rely on to reconstruct the OTHER
+fields is itself latitude-organised (fails near the equator, works well
+poleward) -- but T-insertion doesn't just rely on that relation, it also
+has to survive the harder T-to-wind/mass elliptic inversion (Section 6) AT
+EVERY latitude, and GraphCast's architecture (Section 5.1) apparently cannot
+do that reliably anywhere, not even where its OWN geostrophic-adjustment
+pathway (as demonstrated by 9.2) works fine for the other two insertion
+directions. This remains a [HYPOTHESIS] for the underlying mechanism, but
+9.1-9.2's pattern itself -- global T-Ins failure vs. latitude-organised
+Z-Ins/UV-Ins failure, within the same model and dataset -- is now
+[ESTABLISHED].
+
+9.4 Cross-model check: is "negative at every latitude slice" itself unusual,
+    or does it happen to other models too?
+
+Pulled the equivalent T-insertion, cross-variable, by-latitude-slice numbers
+already computed for Aurora and Prithvi in Organized_results (same +-5deg
+NH slice convention, mature phase):
+
+  Aurora T-Ins -> U500 / Z500 (mature-phase %-improvement):
+    Var    2N     14N    40N    60N
+    U500  51.9%  43.4%  49.4%  33.4%
+    Z500  81.6%  70.4%  66.0%  70.2%
+
+  Prithvi T-Ins -> U_lev45 (~310hPa) / H_lev51 (~500hPa) (mature-phase):
+    Var       2N     14N    40N    60N
+    U_lev45  13.6%  15.5%  -0.3%   0.6%
+    H_lev51  62.7%  65.4%  54.1%  65.6%
+
+Aurora's T-Ins improves U500 and Z500 at literally every one of the 4
+latitude slices, with no sign flips. Prithvi's is positive-to-flat
+everywhere (its weakest cell is -0.3%, essentially zero, not a real
+degradation). GraphCast full's T-Ins, by contrast, is negative at all 12 of
+12 (U/V/Z x 4 slices) cells shown in Section 9.1 -- and severely so (mean
+-196% across U, -213% across V, -200% across Z). "Negative at every
+latitude slice under T-insertion" is not something Aurora or Prithvi show
+at all; it is specific to GraphCast full in this comparison. This
+strengthens Section 3's headline cross-model contrast with within-latitude
+granularity, not just a single global-mean number.
+
+9.5 What this means for Section 5's claims, concretely.
+
+  - Section 5.2 (no learned geostrophic-adjustment mechanism): STRENGTHENED
+    for Z-Ins/UV-Ins specifically -- the exact equator-to-pole signature is
+    now reproduced in-study (9.2), not just cited from a different
+    resolution/checkpoint. Still [HYPOTHESIS] as the explanation for WHY,
+    but the underlying empirical PATTERN it rests on is now [ESTABLISHED]
+    in this study, which is a materially stronger foundation.
+  - Section 5.2's application to T-INS specifically needs revision: the
+    T-insertion failure is not simply the Rossby-number pathology already
+    documented for GraphCast-Small's Wind-Ins -- it is broader (9.1, 9.3).
+    Cite 9.1-9.3, not just the GraphCast-Small analogy, when discussing
+    T-insertion's failure mode specifically.
+  - Section 5.3 (vertical resolution) and Section 8.3 (the proposed
+    13-level ablation) are UNCHANGED by this result -- latitude
+    stratification does not distinguish the vertical-DOF hypothesis from
+    the architecture hypothesis. That ablation is still the next
+    recommended step, and is now sharper to interpret: since 9.1 shows the
+    T-Ins failure is not simply latitude-organised, a positive result from
+    the 13-level ablation (blowup persists) would leave "T-to-wind/mass
+    inversion is uniformly hard for GraphCast everywhere" (Section 6) as
+    the most parsimonious remaining explanation, rather than needing to
+    also explain away a latitude pattern that turned out not to exist for
+    this particular insertion variable.
+
+9.6 Data provenance for this section.
+  latslice_analysis/compute_latslice_rmse.py (script)
+  latslice_analysis/slurm/run_latslice_{control,t,z,uv}.sbatch (SLURM jobs
+    180056-180059, all COMPLETED)
+  latslice_analysis/{control,osse_t_global,osse_z_global,osse_uv_global}/
+    rmse_latslice_*.csv (raw per-step, per-slice, per-level RMSE)
+  latslice_analysis/latslice_pct_improvement_summary.csv (the mature-phase
+    summary table this section's numbers are drawn from)
+  Cross-model comparison (9.4):
+    Organized_results/Aurora/lat_bands/values/Aurora_latslice_pct_improvement_summary.csv
+    Organized_results/Prithvi/lat_bands/values/latslice_pct_improvement_summary.csv
+
+9.7 [ESTABLISHED] Extending the universality question to two more
+    stratification axes: terrain class and cloud regime (2026-08-25).
+
+Section 9.1-9.3 established that T-Ins's failure is not confined to the
+tropics (unlike Z-Ins/UV-Ins, which ARE latitude-organised). Natural
+follow-up: is it confined to any OTHER environmental regime -- terrain
+complexity, or cloud/moist-convective conditions -- the same two axes the
+reference cross-model study stratified by for Aurora/FCN/Prithvi
+(Organized_results/common/{terrain,cloud}/)? No new GPU experiments needed
+-- this stratifies the SAME 3 already-completed insertion runs (T/Z/UV-Ins)
+plus control, the same way Section 9 stratified them by latitude.
+
+Method: built a static 5-class terrain mask (Land Low <300m / Land Mod
+300-1500m / Land High >=1500m / Ocean / Polar |lat|>60, same classification
+convention as Organized_results/common/terrain/fig_terrain_temp_ins.py::
+classify_terrain()) directly from GraphCast's own static input fields
+(geopotential_at_surface/g for elevation, land_sea_mask for land fraction --
+same self-consistency choice already made for land_sea_mask_0.25deg.nc in
+Section 18's land/ocean study) -- see build_terrain_mask.py. Built a
+time-varying 4-regime cloud classification (Clear TCC<10% / Cirrus 10-40% /
+Mixed 40-70% / Opaque >=70%, same convention as
+Organized_results/common/tcc/fig5_75_76_temp_ins_cloud_regime.py::
+classify_regime()) from the existing ERA5 total-cloud-cover file at
+/umbc/rs/pi_halem/users/yashd1/ALL_ERA5/tcc/
+era5_total_cloud_cover_2022_jan_feb_6hourly.nc -- confirmed this file
+actually covers 2022-01-01 through 2022-03-31 despite its "jan_feb"
+filename, comfortably spanning this project's full 60-day rollout window.
+Unlike terrain (a static mask reused every step), cloud regime is
+reclassified at every 6-hourly step from the matching ERA5 TCC snapshot,
+since cloud cover is obviously time-varying. New scripts
+compute_terrain_rmse.py / compute_cloud_rmse.py, same streaming chunk/ERA5-
+loading approach as compute_rmse.py and Section 9's compute_latslice_rmse.py,
+restricted to the same 300/500/1000 hPa levels. Both smoke-tested on 1 chunk
+(correct row counts, physically sane RMSE magnitudes and growth with lead
+time) before the full 8-job run (control x {terrain,cloud} x {T,Z,UV}-Ins,
+all COMPLETED, ~17 min each).
+
+RESULT -- the same pattern found for latitude (9.1-9.2) reproduces cleanly
+across BOTH new stratification axes:
+
+  T-Ins fails at EVERY terrain class tested (Land Low/Mod/High, Ocean,
+  Polar) and EVERY cloud regime tested (Clear/Cirrus/Mixed/Opaque) -- not
+  one of the 5 terrain classes or 4 cloud regimes shows positive coupling
+  for U, V, or Z under T-insertion. Representative cells (mature phase,
+  U/V/Z at 500 hPa): terrain range -78.5% (U, Ocean) to -629.9% (V, Land
+  High); cloud regime range -211.1% (V, Opaque) to -446.2% (Z@1000, Cirrus).
+  T's own self-insertion is a uniform ~99.4-99.7% at every class/regime (the
+  expected trivial-diagonal sanity check).
+
+  Z-Ins and UV-Ins remain mild-to-strongly positive across every terrain
+  class and every cloud regime tested, matching their global-insertion and
+  latitude-slice behaviour -- e.g. UV-Ins -> U/V is a uniform ~99.1-99.5%
+  regardless of terrain or cloud regime; UV-Ins -> Z ranges 47.9-68.1%
+  across all cloud regimes and 38.2-68.2% across all terrain classes, always
+  positive. Z-Ins -> T/U/V is mild and occasionally mixed (a handful of
+  negative cells, e.g. Z-Ins -> T is negative over Ocean and most terrain
+  classes at 300hPa, -85.5% at Cirrus, -68.7% at Mixed) but never
+  catastrophic, and never uniformly negative across all classes the way
+  T-Ins is.
+
+This is now the THIRD independent stratification axis (after latitude,
+Section 9.1) where the same qualitative split holds: T-insertion's failure
+is regime-independent -- global with respect to latitude, terrain, AND
+cloud/moist-convective regime -- while Z-Ins/UV-Ins's success is either
+regime-independent (uniformly positive) or, for latitude specifically,
+cleanly organised by the Rossby number (Section 9.2). No terrain class or
+cloud regime "rescues" T-insertion the way high latitudes rescue Z-Ins/
+UV-Ins in Section 9.2. This further narrows Section 9.3's open question:
+whatever mechanism makes GraphCast's T-to-wind/mass inversion (Section 6)
+fail, it is not gated by any of the three environmental factors (equator-
+to-pole position, terrain complexity, cloud/convective regime) that
+organise the OTHER two insertion experiments' behaviour -- consistent with
+it being a property of the insertion itself (which field, how hard, how
+often -- Sections 5, 6) rather than of where or under what conditions it is
+applied.
+
+9.8 Data provenance for Section 9.7.
+  build_terrain_mask.py -> terrain_mask_0.25deg.nc
+  compute_terrain_rmse.py, compute_cloud_rmse.py
+  terrain_analysis/slurm/run_terrain_{control,z,t,uv}.sbatch (SLURM jobs
+    180599-180602, all COMPLETED)
+  cloud_analysis/slurm/run_cloud_{control,z,t,uv}.sbatch (SLURM jobs
+    180603-180606, all COMPLETED)
+  terrain_analysis/{control,osse_z_global,osse_t_global,osse_uv_global}/
+    rmse_terrain_*.csv, terrain_analysis/terrain_pct_improvement_summary.csv
+  cloud_analysis/{control,osse_z_global,osse_t_global,osse_uv_global}/
+    rmse_cloud_*.csv, cloud_analysis/cloud_pct_improvement_summary.csv
+  regime_analysis_results/{terrain,cloud}/csv/ (curated copies)
+  Reference classification conventions:
+    Organized_results/common/terrain/fig_terrain_temp_ins.py
+    Organized_results/common/tcc/fig5_75_76_temp_ins_cloud_regime.py
+
+
+10. PERTURBED-TRUTH ROBUSTNESS CHECK: DOES REALISTIC OBSERVATION ERROR CHANGE
+    THE FINDING? (COMPLETED 2026-08-24)                              [ESTABLISHED]
+--------------------------------------------------------------------------------
+10.0 Motivation and method.
+
+Every insertion experiment in this report so far (Sections 3, 9) hard-replaces
+GraphCast's state with EXACT ERA5 truth -- no observation error. A natural
+objection: maybe the T-insertion instability is partly an artifact of forcing
+the model with an unrealistically perfect, noise-free signal, and would look
+different under a more realistic OSSE design where "truth" carries
+observation-error-like noise, the way real assimilated observations do.
+
+Tested this directly by porting the "Correlated OSSE Perturbation" (COP)
+scheme already implemented for this research program's other three models
+(Aurora, FourCastNet v2, Prithvi WxC -- see
+/umbc/rs/pi_halem/users/yashd1/PERTURBATION_EXPERIMENTS/METHOD_OVERVIEW.md for
+the full cross-model method writeup and citations: Errico et al. 2013,
+Ingleby 2017, Hollingsworth & Lonnberg 1986, Bormann & Bauer 2010, Bormann et
+al. 2016, Bannister 2008, Parrish & Derber 1992, Holton) to full GraphCast.
+Two new experiments, T_PERTURBED_CORR/ and UV_PERTURBED_CORR/ (same
+directory-per-experiment convention as the rest of this project; see
+PERTURBATION_IMPLEMENTATION.md for full code-level detail): instead of
+hard-replacing with exact truth, hard-replace with truth + spatially- and
+vertically-correlated Gaussian noise, calibrated to Ingleby (2017)-style
+radiosonde error magnitudes (~0.7-2.0 K by level for temperature, ~1.0-2.2 m/s
+by level for wind), with wind noise specifically constructed as a
+non-divergent field derived from a random streamfunction (not independent
+u/v noise, which would inject unphysical divergence). Horizontal correlation
+length ~250 km (Gaussian-smoothed white noise); vertical correlation via
+exponential decay in log-pressure space. This is calibrated, physically-
+motivated OBSERVATION ERROR, not a weaker/damped correction -- the full-
+strength hard-replacement structure (steps 121-240, every 6h) is unchanged;
+only the SIGNAL now carries realistic noise instead of being noise-free. This
+is a different question from the damped/partial-nudging idea in Section 8.2
+below (weaker correction strength) -- that experiment is still open.
+
+Extending the reference implementation's 13-level sigma tables to GraphCast's
+37 levels required log-pressure interpolation (documented limitation, flat-
+extrapolated above 50 hPa where no reference radiosonde curve exists -- see
+perturbation.py's module docstring for the full statement).
+
+A real implementation bug was caught before wasting GPU time: the
+perturbation code's local RNG variable was named `rng`, colliding with
+chunked_prediction_generator's own JAX PRNGKey parameter of the same name in
+the same function scope -- silently corrupting it and crashing the NEXT
+chunk's jax.random.split call. A single-chunk unit test missed this (no next
+chunk to corrupt); a multi-chunk test with injection starting mid-run caught
+it immediately. Fixed (renamed to `noise_rng`), reverified with the same
+multi-chunk test, then verified a third way against real GPU output: the
+perturbed minus truth RMS difference at 500 hPa matched the calibrated sigma
+almost exactly (T: 0.7006 K vs 0.7 K target; U: 1.2000 m/s vs 1.2 m/s
+target), with near-zero mean bias -- confirms the noise is unbiased and
+correctly calibrated, not just structurally present.
+
+10.1 Result: the T-insertion instability is essentially UNCHANGED by adding
+     realistic observation-error noise.
+
+Mature-phase (day 30-60) mean %-RMSE-improvement on the non-inserted fields:
+
+  Experiment              Z            U            V
+  ------------------------------------------------------------------
+  T-Ins  (exact truth)   -199.58%     -195.72%     -212.55%
+  T-Ins  (COP-perturbed) -196.87%     -194.56%     -208.94%
+  UV-Ins (exact truth)    +52.54%      +99.19%      +99.12%
+  UV-Ins (COP-perturbed)  +52.34%      +89.88%      +93.80%
+
+(T's own trivial self-insertion drops from 99.16% (exact) to 86.79%
+(perturbed), and UV's from ~99.1-99.2% to ~89.9-93.8% -- both EXPECTED and
+CORRECT, since the inserted values are no longer exactly truth by
+construction; this is a sanity check that the noise is actually reaching the
+inserted field, not a concern.)
+
+The catastrophic T-insertion degradation of Z/U/V, and the healthy
+Z-Ins/UV-Ins cross-variable improvement, are both essentially unchanged in
+sign and magnitude whether the inserted truth is exact or carries realistic,
+calibrated observation error. This rules out "the instability is an artifact
+of forcing the model with an unrealistically perfect, noise-free signal" as
+an explanation -- adding realistic noise on top of the same full-strength
+hard-replacement structure does not meaningfully change either the failure
+(T-Ins) or the success (UV-Ins) case. The instability is a property of WHICH
+FIELD is being forced and HOW OFTEN/HOW COMPLETELY (Sections 5, 6), not of
+how clean the forcing signal is.
+
+10.2 What this does and doesn't tell us.
+
+This result strengthens the case that Section 5's "no learned geostrophic-
+adjustment mechanism" explanation is about the STRUCTURE of the forcing
+(univariate, hard, high-frequency, high-vertical-resolution) rather than
+about the forcing being unrealistically idealized -- a real observing system
+feeding realistic, imperfect temperature observations into GraphCast via the
+same kind of hard sequential correction would apparently hit the same
+instability. It does NOT test the damped/partial-nudging idea (Section 8.2,
+still open) -- a WEAKER correction (blending toward truth with some
+relaxation coefficient alpha < 1, rather than a full-strength hard
+replacement with noisy vs. noise-free truth) remains a genuinely different,
+untested variable.
+
+10.3 Data provenance for this section.
+  perturbation.py (shared correlated-noise module, ported from the reference
+    FCN/Aurora/Prithvi implementation in PERTURBATION_EXPERIMENTS/)
+  PERTURBATION_IMPLEMENTATION.md (full method/hyperparameter/validation writeup)
+  T_PERTURBED_CORR/, UV_PERTURBED_CORR/ (rollout + RMSE + comparison pipeline,
+    same structure as osse_{t,uv}_global/)
+  perturbation_results/{T_PERTURBED_CORR,UV_PERTURBED_CORR}/{csv,plots}/
+    (curated CSVs and plots)
+  Reference method: /umbc/rs/pi_halem/users/yashd1/PERTURBATION_EXPERIMENTS/
+    METHOD_OVERVIEW.md, FCN/IMPLEMENTATION.md
+
+
+11. LIMITATIONS OF THIS CROSS-MODEL COMPARISON -- READ BEFORE PUBLICATION
+--------------------------------------------------------------------------------
+This section exists specifically so nothing here gets overstated in a
+manuscript. The four-model comparison in Section 3 is OBSERVATIONAL, not a
+controlled ablation: Aurora, FCN, Prithvi, and GraphCast full differ in
+every one of the following ways simultaneously, not just in the
+architectural properties invoked in Section 5:
+
+  - Truth/training data source: ERA5 for Aurora/FCN/GraphCast, MERRA-2 for
+    Prithvi -- a genuinely different reanalysis product, not just a
+    different model.
+  - Horizontal resolution: 0.25 deg (Aurora, FCN, GraphCast) vs 0.5 deg
+    (Prithvi).
+  - Native vertical-level count: 13 (Aurora, FCN), 14 (Prithvi), 37
+    (GraphCast full) -- see Section 5.3's unresolved status.
+  - Insertion cadence: 12h (Aurora, FCN) vs 6h (GraphCast, Prithvi) --
+    ruled out as the primary driver in Section 4.2, but still a real
+    difference in experimental protocol, not just the model.
+  - Initial condition date/season: 1 February 2023 (Aurora, FCN) vs
+    1 January 2022 (GraphCast, Prithvi) -- different year AND different
+    season. Cross-variable dynamical balance (e.g. the strength of the
+    midlatitude jet, baroclinicity, ENSO phase) is season-dependent; this
+    report has not checked whether the specific season/state of the
+    atmosphere in each model's IC window materially affects how "hard" the
+    T-to-wind/mass inversion problem (Section 6) is for that particular
+    60-day window, independent of which model is doing the inverting.
+  - Training objective and loss weighting: not compared in this report at
+    all. Differences in per-variable loss weighting, curriculum
+    (single-step vs multi-step autoregressive fine-tuning), and how much
+    rollout stability was explicitly optimized for during training could
+    each independently affect sensitivity to out-of-distribution forced
+    inputs, and have not been examined here.
+
+A rigorous version of this study, suitable for a claim stronger than
+"consistent with," would need at least one of: (a) the same model
+architecture run at multiple vertical resolutions (Section 8.3), (b) the
+same insertion experiment repeated across multiple ICs/seasons for each
+model to check season-dependence, or (c) a synthetic/toy dynamical model
+where architecture can genuinely be varied while holding data, resolution,
+and training procedure fixed. None of these exist yet for this comparison.
+The claims in Section 5 should be read, and cited, as the most
+parsimonious explanation consistent with the available (confounded)
+evidence -- not as an isolated, proven causal mechanism.
+
+
+12. DATA PROVENANCE FOR THIS REPORT'S NUMBERS
+--------------------------------------------------------------------------------
+GraphCast full (this project):
+  final_results/control/csv/rmse_60day_2022-01-01.csv
+  final_results/osse_t_global/csv/{rmse_osse_t_global_2022-01-01.csv,
+    compare_t_global_pct_improvement.csv}
+  final_results/osse_z_global/csv/{rmse_osse_z_global_2022-01-01.csv,
+    compare_z_global_pct_improvement.csv}
+  final_results/osse_uv_global/csv/{rmse_osse_uv_global_2022-01-01.csv,
+    compare_uv_global_pct_improvement.csv}
+  session_log.md Sections 6-7 (control baseline), 12-14 (OSSE design, bug,
+    fix, original findings), 15 (bug fix + rerun + corrected findings this
+    report's Section 3/4 numbers are drawn from)
+
+Aurora / FourCastNet v2 / Prithvi WxC (cross-model comparison data):
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/Aurora/coupling/values/Aurora_coupling_matrix.csv
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/FourCastNet/coupling/values/FCN_coupling_matrix.csv
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/Prithvi/coupling/values/Prithvi_coupling_matrix.csv
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/common/lat_band/PHYSICAL_ANALYSIS.txt
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/common/terrain/PHYSICAL_ANALYSIS_T_Ins.txt
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/common/cloud/PHYSICAL_ANALYSIS_T_Ins.txt
+  /umbc/rs/pi_halem/users/yashd1/Organized_results/map.md (study design,
+    per-model grid/cadence/level conventions, Section 6 known non-uniformities)
+  /umbc/rs/pi_halem/users/yashd1/fcn_inference/inf.py (insertion mechanism
+    verification), /umbc/rs/pi_halem/users/yashd1/CC_aurora/,
+    /umbc/rs/pi_halem/users/yashd1/prithviOSSE/ (shared OSSE design)
+
+
+REFERENCES
+--------------------------------------------------------------------------------
+Charney, J.G. (1947/1948), foundational quasi-geostrophic theory.
+Lam, R., et al. (2023), "GraphCast: Learning skillful medium-range global
+  weather forecasting," Science; arXiv:2212.12794.
+Pathak, J., et al. (2022), "FourCastNet: A Global Data-driven High-resolution
+  Weather Model using Adaptive Fourier Neural Operators," arXiv:2202.11214.
+Bodnar, C., et al. (2024/2025), "A Foundation Model for the Earth System,"
+  Nature; arXiv:2405.13063.
+Schmude, J., et al. (2024), "Prithvi WxC: Foundation Model for Weather and
+  Climate," arXiv:2409.13598.
+Arnold, C.P., and C.H. Dey (1986), "Observing-Systems Simulation Experiments:
+  Past, Present, and Future," Bull. Amer. Meteor. Soc.
+Masutani, M., et al. (2010), "Observing system simulation experiments at the
+  National Centers for Environmental Prediction," J. Geophys. Res., 115.
+Errico, R. M., et al. (2013), "Development and validation of observing-system
+  simulation experiments at NASA's Global Modeling and Assimilation Office,"
+  Quarterly Journal of the Royal Meteorological Society. (Section 10)
+Ingleby, B. (2017), "An assessment of different radiosonde types 2015/2016,"
+  ECMWF Technical Memorandum. (Section 10, temperature/wind sigma-by-level
+  calibration)
+Hollingsworth, A., & Lonnberg, P. (1986), "The statistical structure of
+  short-range forecast errors as determined from radiosonde data. Part I:
+  The wind field," Tellus A. (Section 10, horizontal correlation length)
+Bormann, N., & Bauer, P. (2010), "Estimates of spatial and interchannel
+  observation-error characteristics for current sounder radiances," QJRMS.
+  (Section 10)
+Bormann, N., et al. (2016), "Estimating and accounting for correlated
+  observation error," Monthly Weather Review, 146(10), 2018. (Section 10)
+Bannister, R. N. (2008), "A review of forecast error covariance statistics in
+  atmospheric variational data assimilation. II," QJRMS. (Section 10,
+  vertical correlation structure)
+Parrish, D. F., & Derber, J. C. (1992), "The National Meteorological Center's
+  spectral statistical-interpolation analysis system," Monthly Weather
+  Review. (Section 10, streamfunction-based wind error representation)
+Holton, J. R., An Introduction to Dynamic Meteorology (any edition) --
+  streamfunction/non-divergent wind relation, used in Section 10's wind
+  perturbation.
+See also, for the full Correlated OSSE Perturbation method and its original
+  cross-model (Aurora/FCN/Prithvi) implementation that Section 10 ports:
+  /umbc/rs/pi_halem/users/yashd1/PERTURBATION_EXPERIMENTS/METHOD_OVERVIEW.md.
+See also, for the independent GraphCast-Small supporting evidence cited in
+  Section 5.2: Organized_results/common/lat_band/PHYSICAL_ANALYSIS.txt and
+  Organized_results/common/cloud/PHYSICAL_ANALYSIS_T_Ins.txt, and their own
+  reference lists (Wang et al. 2022; Kwon et al. 2024; Charlton-Perez et al.
+  2024).
+================================================================================

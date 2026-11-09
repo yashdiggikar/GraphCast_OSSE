@@ -1,0 +1,32 @@
+SPILLOVER-DISTANCE DECAY -- GC-DETER-2023 (GraphCast full, 2023-02-01 IC)
+==========================================================================
+
+Ports the method from /umbc/rs/pi_halem/users/yashd1/spillover_analysis.py
+(AMS paper Appendix A.1) onto this study's own land_temp_ins/ocean_temp_ins
+experiments. See that script/the paper text for the full method rationale;
+summary of this port's specifics:
+
+1. Land mask: this study's own IC file's `land_sea_mask` (721x1440, no
+   crop), thresholded > 0.5 -- the SAME mask/threshold actually used when
+   land_temp_ins/ocean_temp_ins were run (--insert_mask_var land
+   --land_threshold 0.5).
+2. Great-circle distance field via cKDTree on unit-sphere coordinates,
+   identical construction to the reference.
+3. Evaluation restricted to the NOT-inserted class (ocean for land_temp_ins,
+   land for ocean_temp_ins).
+4. Same 15 great-circle-distance bins (km) as the reference: 0,100,200,350,
+   500,700,900,1200,1500,1900,2400,3000,4000,6000,10000,20100.
+5. T500 (500hPa temperature) RMSE per bin: cosine-latitude-weighted squared
+   error vs. ERA5 truth (truth/truth_leadtime_2023-02-01IC.nc), pooled
+   jointly over space and the last-20-day mature window (days 41-60 of the
+   60-day rollout -- this study's insertion starts day 30.25/step 121),
+   RMSE = sqrt(sum(weighted SE)/sum(weight)) per bin. Computed independently
+   for control (control/full_predictions/) and each experiment
+   (land_temp_ins/, ocean_temp_ins/full_predictions/), both at native
+   6-hourly cadence, matched to the nearest ERA5 truth timestep.
+6. % improvement = 100 * (RMSE_control - RMSE_experiment) / RMSE_control.
+
+Only GraphCast (this study) is included -- there is no equivalent GraphCast
+run in the original 3-model (Aurora/FCNv2/Prithvi) AMS-paper spillover
+analysis (GraphCast was excluded from Appendix A.1 there, "no matching
+run"). This is therefore GraphCast's first spillover-decay result.

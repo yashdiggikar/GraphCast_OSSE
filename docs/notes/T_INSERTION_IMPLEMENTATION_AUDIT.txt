@@ -1,0 +1,403 @@
+================================================================================
+GRAPHCAST T-INSERTION BLOW-UP: BUG AUDIT + MECHANISM INVESTIGATION
+================================================================================
+Date: 2026-09-03
+Scope: osse_t_global/ (temperature global truth-insertion experiment), compared
+against osse_z_global/ and osse_uv_global/ (which do NOT show this pathology).
+IC: 2022-01-01, 60-day (240-step, 6-hourly) rollout, insertion from step 120
+(0-based; day 30.25 is the first injected step), all 37 native pressure levels.
+
+Trigger for this investigation: the existing synthesis doc
+(GRAPHCAST_T_INSERTION_ANOMALY_ANALYSIS.txt) already documented that T-only
+truth insertion catastrophically degrades Z/U/V (unlike Z-insertion and
+UV-insertion, which behave normally and improve cross-variables), and attributed
+this to an architectural limitation (GraphCast's local-GNN lacking a learned
+geostrophic-adjustment mechanism). The user had a hunch this might instead be an
+implementation bug (Kelvin/Celsius mismatch, a normalization error, or something
+not yet identified) and asked for a deep, skeptical, evidence-based re-check
+using actual code and actual on-disk data -- not a re-read of the existing
+conclusion.
+
+Epistemic tags used below (same convention as the main analysis doc):
+  [ESTABLISHED]     -- directly confirmed by data/code inspection in this session
+  [HYPOTHESIS]       -- plausible, evidence-consistent, not fully proven
+  [NEEDS FOLLOW-UP]  -- open question, not yet checked
+
+================================================================================
+PART 0: HEADLINE ANSWER
+================================================================================
+
+[ESTABLISHED] No implementation bug was found. Every mechanism that could
+produce this pattern via a coding error was checked against actual code and
+actual data and was either cleanly ruled out or actively contradicted by
+evidence.
+
+[ESTABLISHED] The root cause is empirically traceable to a genuine, measurable
+gap in GraphCast's own free-running forecast skill: its 50 hPa / near-polar
+temperature forecast is unusually poor relative to that field's own natural
+variability, compared to every other variable/level tested. Hard-replacing
+temperature with truth at that level, every 6 hours from day 30 onward, injects
+the single largest out-of-distribution "shock" of any variable/level combination
+checked -- into exactly the part of the model (the pole, via a structural
+degeneracy in the grid-to-mesh encoding) that is least equipped to absorb it.
+Because GraphCast never learned an explicit geostrophic/hydrostatic rebalancing
+step, this shock does not get damped -- it gets re-forced every insertion step
+and compounds into runaway, unphysical values (e.g. U-wind reaching -1894.6 m/s
+by day 60, concentrated at the South Pole / 50 hPa).
+
+This corroborates, and now quantitatively grounds, the existing "no
+geostrophic-adjustment mechanism" hypothesis in GRAPHCAST_T_INSERTION_ANOMALY_
+ANALYSIS.txt -- it does not overturn it.
+
+================================================================================
+PART 1: BUG AUDIT -- HYPOTHESIS BY HYPOTHESIS
+================================================================================
+
+Background reminder: all three insertion variants (osse_t_global, osse_z_global,
+osse_uv_global) are supposed to use an IDENTICAL generalized insertion mechanism
+-- a `chunked_prediction_generator(..., insert_var_names: Sequence[str], ...)`
+in each variant's own graphcast/rollout.py copy, differing only in which
+variable name(s) get passed via --insert_var_names. prepare_truth.py (shared,
+top-level) builds one lead-time-indexed 37-level truth NetCDF
+(era5_37level_2022/truth_leadtime_2022-01-01IC.nc) used by all three variants.
+
+--------------------------------------------------------------------------------
+1. Kelvin/Celsius or scale/offset bug
+--------------------------------------------------------------------------------
+[ESTABLISHED] RULED OUT.
+
+Loaded era5_37level_2022/truth_leadtime_2022-01-01IC.nc directly and read
+temperature at level=500hPa, time_idx=0: mean = 251.79 K. This is the *exact*
+value already independently validated in session_log.md Section 7 against a
+separately-downloaded 13-level ERA5 source (251.77 +/- 13.49 predicted vs.
+251.79 +/- 13.48 truth). No Celsius conversion, no spurious scale/offset
+anywhere in prepare_truth.py.
+
+Stronger proof, found by inspecting raw (not summary) RMSE rows: in
+osse_t_global/out/rmse_osse_t_global_2022-01-01.csv, temperature @ 50 hPa RMSE
+is exactly 0.000000000 (full float precision, zero floating-point noise) for
+every row from lead_days = 30.25 onward, i.e. every step after the injection
+boundary. A unit/scale/offset bug would leave a large systematic residual, not
+a bit-exact zero. This is direct proof the insertion is writing physically
+correct, correctly scaled truth values into the model state.
+
+stats/mean_by_level.nc / diffs_stddev_by_level.nc for temperature (261-281 K by
+level, Kelvin) are internally consistent with the truth file's Kelvin range --
+no mismatch between the checkpoint's expected normalization and the truth data
+units.
+
+--------------------------------------------------------------------------------
+2. Normalization/casting special-casing for temperature
+--------------------------------------------------------------------------------
+[ESTABLISHED] RULED OUT.
+
+Grepped normalization.py and casting.py for any temperature-specific logic:
+none exists -- both files are fully variable-agnostic tensor operations.
+graphcast.py only references "temperature"/"2m_temperature" inside generic
+variable-name lists and a per-variable loss-weight dict (see Part 2.D below),
+nothing that could introduce a temperature-specific numerical bug.
+
+--------------------------------------------------------------------------------
+3. Insertion mechanism differing across variants (code-level divergence)
+--------------------------------------------------------------------------------
+[ESTABLISHED] RULED OUT.
+
+`diff` across all three graphcast/rollout.py copies (osse_t_global vs
+osse_z_global vs osse_uv_global) is byte-identical, zero diff. The
+`chunked_prediction_generator`'s insert_var_names loop (~lines 413-465) treats
+every variable through the exact same code path: hard-replace at masked
+timesteps, then reindex_like on level/lat/lon/batch only, using pinned time
+coordinates specifically to avoid nearest-match collapsing multiple chunk
+positions onto a single truth step (the code has comments explaining this
+subtlety, and it is handled correctly).
+
+run_osse_insertion.py diffs across the three variants show only the expected
+--insert_var_names value differs ("temperature" / "geopotential" /
+"u_component_of_wind v_component_of_wind"); the sbatch scripts confirm
+identical --inject_from_step 120, identical IC, identical truth file across all
+three variants.
+
+--------------------------------------------------------------------------------
+4. Injection-boundary off-by-one
+--------------------------------------------------------------------------------
+[ESTABLISHED] CHECKED, confirmed intentional and correct, not a bug.
+
+--inject_from_step 120 (0-based) means global_step 119 (lead_days = 30.0) is
+the last free-running step and global_step 120 (lead_days = 30.25) is the first
+injected step. Confirmed exactly by the RMSE data: day 30.0 = 19.56 K RMSE for
+temperature (a smooth continuation of the pre-injection trend), day 30.25
+onward = 0.0 (bit-exact, per item 1 above). This 0-based/1-based labeling
+convention is consistent with session_log.md's own note ("0-based step 120 ==
+'step 121' 1-based") and is identical across all three variants.
+
+--------------------------------------------------------------------------------
+5. Level-ordering / indexing mismatch
+--------------------------------------------------------------------------------
+[ESTABLISHED] RULED OUT.
+
+Truth NetCDF levels are descending (1000 -> 1 hPa); model/prediction output
+levels are ascending. The insertion code's reindex_like(..., method="nearest")
+matches by coordinate VALUE, not array position, so ordering is irrelevant to
+correctness -- and the bit-exact-zero RMSE result from item 1 is direct proof
+this alignment works correctly for temperature specifically.
+
+--------------------------------------------------------------------------------
+6. Surface/pressure-level asymmetry (2m_temperature never corrected)
+--------------------------------------------------------------------------------
+[ESTABLISHED] A real asymmetry exists, but ruled out as the primary driver.
+
+Confirmed: truth_ds only contains 4 variables (geopotential, temperature,
+u_component_of_wind, v_component_of_wind) -- 2m_temperature is never in
+insert_var_names for any variant and is never available as truth, so it stays
+on the model's own free-running trajectory during T-insertion. This is a real,
+structurally-uncorrected surface counterpart to the corrected pressure-level
+temperature column.
+
+However, the exact same pattern exists for wind (10m_u/v_component_of_wind is
+also never corrected during UV-insertion) -- and UV-insertion does NOT blow up
+(final U/V min/max after 60 days stay within -49/+100 m/s, tighter than
+control's own -136/+94 m/s range). If an uncorrected surface counterpart were
+the trigger, UV-insertion should show the same catastrophic pattern; it does
+not. This also does not fit the vertical shape of the failure (worst at 50 hPa
+/ upper levels, not at the surface where this particular mismatch would live).
+Ruled out as the primary mechanism, though it may be a very minor contributing
+factor at the lowest levels.
+
+--------------------------------------------------------------------------------
+7. Residual/tendency autoregressive-state wiring bug
+--------------------------------------------------------------------------------
+[ESTABLISHED] RULED OUT.
+
+GraphCast predicts a residual (denormalized diff from the previous step) added
+to the previous state, not an absolute value directly. Checked
+`_get_next_inputs` (rollout.py ~lines 493-515): it merges `predictions` (which
+already contains the injected truth values, since injection happens on
+`predictions` BEFORE this merge, at ~line 470) with forcings, concatenates onto
+`prev_inputs`, and keeps the last num_inputs=2 timesteps. This is standard and
+correct, identical to vanilla DeepMind's own autoregressive wiring (already
+independently audited for the control run in session_log.md Section 10). No
+stale/uncorrected baseline is fed forward into the next step for any variant,
+including temperature.
+
+--------------------------------------------------------------------------------
+Shape of the actual failure (evidence against "mechanical bug", for "real
+dynamical effect")
+--------------------------------------------------------------------------------
+[ESTABLISHED]
+
+- No instantaneous jump at the injection boundary. Z @ 500 hPa: control 968.1
+  vs. T-global 1013.1 at day 30 (BEFORE injection even starts at day 30.25) --
+  already diverging only slightly, consistent with ordinary chaotic spread. By
+  day 35 the two are still close (1207.9 vs 1228.7).
+- The real divergence opens up between day 35 and day 40 (control 1411 vs.
+  T-global 1791) and then compounds explosively: day 45 (1329 vs 2314), day 50
+  (1451 vs 3631), day 60 (1747 vs 7720).
+- U @ 500 hPa is transiently BETTER than control at days 32-35 (9.2-9.4 vs.
+  control's 10.5-11.8), before flipping to catastrophic divergence by day 40
+  (17.2 vs 12.3) and day 60 (138.4 vs 16.6). A mechanical/indexing/unit bug
+  would not produce a transient improvement followed by delayed runaway growth
+  -- this is the signature of a nonlinear feedback instability building up over
+  repeated autoregressive steps, not a one-shot coding error.
+- Raw output at day 60 shows physically impossible values specific to
+  T-insertion: U-wind reaches -1894.6 m/s (control's free-running U at the same
+  time stays within -136 to +94 m/s; Z- and UV-insertion stay in the
+  -165/+130 and -49/+100 m/s range respectively -- close to or better than
+  control). The single worst grid point is at the South Pole, 50 hPa
+  (lat = -90, level = 50 hPa).
+- Z-insertion and UV-insertion, running through the byte-identical insertion
+  code, do not reproduce any of this -- their final-state fields stay
+  physically sane and close to (or better than) control.
+
+================================================================================
+PART 2: MECHANISM -- WHY TEMPERATURE SPECIFICALLY?
+================================================================================
+
+--------------------------------------------------------------------------------
+A. Out-of-distribution shock size (the key driver)
+--------------------------------------------------------------------------------
+[ESTABLISHED]
+
+Computed "jump" = |free-running control model's own predicted value at the
+injection instant (day 30.25, step 120 0-based) - truth value at that instant|,
+normalized by that variable/level's own stats/stddev_by_level.nc (i.e. a
+z-score of the correction), for temperature, geopotential, u-wind, v-wind, at
+levels 50/500/850/1000 hPa, both globally and at the South Pole:
+
+    variable        level     region    raw jump    stddev    z-score
+    temperature     50 hPa    global    14.29 K     10.32     1.384
+    temperature     50 hPa    pole      19.23 K     10.32     1.863   <- largest
+                                                                          of all
+                                                                          32
+                                                                          combos
+                                                                          checked
+    temperature     500/850/1000 hPa    global      2.8-3.3   13-17   0.16-0.21
+    geopotential    50/500/850/1000 hPa global      --        --      0.20-0.41
+    geopotential    850/1000 hPa        pole        --        --      0.83/0.87
+                                                                        (2nd
+                                                                        largest)
+    u/v-wind        all levels checked  global/pole --        --      0.02-0.82
+
+Temperature's shock at 50 hPa is the standout outlier -- 1.4-1.9x its own
+normalization stddev, vs. everything else clustering under ~0.9.
+
+This is not a one-snapshot artifact: pulling the FULL 30-day control RMSE
+(not just one instant) and normalizing it the same way gives temperature @
+50 hPa a normalized RMSE of 1.84 -- again the single largest value among ALL
+variable/level combinations tested, with the next closest being V-wind @ 50 hPa
+at 1.17.
+
+Conclusion: GraphCast's free-running 30-day forecast skill for temperature at
+50 hPa (lower stratosphere / near-pole) is genuinely, robustly worse relative
+to its own natural variability than any other field/level tested here. This is
+a real learned-skill gap in the model itself -- not an artifact of the
+insertion mechanism -- and it is the direct, quantifiable reason the T-insertion
+shock is uniquely large.
+
+--------------------------------------------------------------------------------
+B. Growth-curve shape -- mixed signature, not "instant blow-up", not textbook
+   chaos either
+--------------------------------------------------------------------------------
+[ESTABLISHED] / [HYPOTHESIS] (interpretation of the growth mechanism)
+
+- Control (free-running): Z @ 500 hPa plateaus/oscillates (968 -> 1748 over
+  days 30-60, ~1.8x) -- expected climatological saturation, matches the
+  general caveat already noted in session_log.md Section 6 about post-15-day
+  skill horizon behavior.
+- T-insertion: Z @ 500 hPa grows from 1013 -> 7720 over the same window --
+  monotonic runaway. Fitting log(RMSE) linearly over days 35-55 gives an
+  e-folding time of approximately 13 days (doubling time approximately 9
+  days).
+- That is SLOWER than typical atmospheric chaotic error-doubling in real NWP
+  (roughly 2-5 days) -- so [HYPOTHESIS] this is not simply "a small bug-sized
+  seed getting amplified by ordinary chaotic dynamics at a normal rate."
+- At 50 hPa specifically, growth ACCELERATES rather than following a constant
+  e-folding rate: Z @ 50 hPa goes 3129 -> 6202 -> 14321 -> 27591 at days 30,
+  35, 40, 45 -- each 5-day step roughly doubling, AND the doubling itself
+  speeding up. [HYPOTHESIS] This super-exponential pattern is consistent with
+  a continuously RE-FORCED imbalance: truth is hard-replaced every 6 hours
+  from day 30 onward (not a single one-time nudge), so the same-sized
+  out-of-distribution shock from item A gets re-injected at every step,
+  compounding rather than being left to freely (and more slowly) relax back
+  toward equilibrium the way a single perturbation would.
+
+--------------------------------------------------------------------------------
+C. Mesh / pole conditioning -- structural degeneracy confirmed, contributory
+   but not sufficient alone
+--------------------------------------------------------------------------------
+[ESTABLISHED] (the degeneracy itself) / [HYPOTHESIS] (its causal contribution)
+
+grid_mesh_connectivity.py's _grid_lat_lon_to_coordinates function maps grid
+lat/lon points onto a unit sphere. At lat = +/-90 degrees, sin(theta) = 0 for
+every longitude value -- meaning all 1440 longitude grid points at the pole
+map to the EXACT SAME 3D coordinate. This is a genuine structural degeneracy in
+the grid-to-mesh encoding (confirmed directly by reading the transform, not
+inferred from behavior) that would make any error or anomaly concentrated at
+the pole harder for the encoder to represent as spatially distinct information.
+
+This lines up with the observed failure being worst at the South Pole
+specifically. By itself, however, this does not explain why temperature (and
+not geopotential or wind) is the trigger -- it is a pre-existing structural
+vulnerability that the temperature-insertion shock from item A happens to land
+on, worsening the outcome rather than causing it outright.
+
+--------------------------------------------------------------------------------
+D. Per-variable training loss weighting -- checked, does NOT differentiate
+   temperature from the other fields
+--------------------------------------------------------------------------------
+[ESTABLISHED] RULED OUT as a differentiator.
+
+Read losses.py and graphcast.py's per_variable_weights. All multi-level
+variables (temperature, geopotential, u/v-wind, specific humidity, vertical
+velocity) receive the SAME per-level weighting scheme:
+    normalized_level_weights = level / mean(level)
+i.e. weighting proportional to pressure, so 50 hPa is down-weighted in the
+training loss relative to lower levels -- but this down-weighting is applied
+IDENTICALLY across all four multi-level fields, not specifically to
+temperature. (Only single-level/surface variables such as 2m_temperature,
+10m_u/v_component_of_wind, and mean_sea_level_pressure get distinct explicit
+weights, and 2m_temperature is weighted the same 1.0 as the other surface
+variables anyway.)
+
+This rules out asymmetric training-loss weighting as the reason temperature's
+50 hPa skill is weaker than other fields' -- the weak upper-level temperature
+skill identified in item A is a genuine learned-skill gap in the model, not an
+artifact of how the training loss was constructed.
+
+--------------------------------------------------------------------------------
+E. Synthesis -- connecting the OOD-shock finding to the existing "no
+   geostrophic-adjustment mechanism" hypothesis
+--------------------------------------------------------------------------------
+[HYPOTHESIS], but well-evidenced and internally consistent
+
+Items A-D above are not competing explanations for the original architectural
+hypothesis in GRAPHCAST_T_INSERTION_ANOMALY_ANALYSIS.txt -- the
+out-of-distribution-shock framing in A is best read as the STATISTICAL
+SIGNATURE of the same underlying gap, not a distinct root cause.
+
+Reasoning: the shock is large specifically because (i) GraphCast's free-running
+temperature skill is uniquely weak at 50 hPa / near-pole (item A, confirmed by
+two independent measurements -- the single-instant jump and the full 30-day
+normalized RMSE), and (ii) unlike Z-insertion or UV-insertion, correcting
+temperature does not just "nudge" the state -- it discontinuously severs the
+model's own predicted temperature from the geopotential/wind state it had been
+dynamically extrapolating from, at exactly the location/level where it is
+already weakest. A physically-consistent data-assimilation scheme would
+re-balance Z/U/V toward hydrostatic and thermal-wind consistency with the
+newly-inserted T. GraphCast's learned dynamics has no such explicit mechanism
+(this is the original hypothesis, restated) -- so instead of the imbalance
+being damped, it gets continuously re-forced every 6-hour insertion step
+(item B) and compounds into runaway growth, worst exactly where the pole's
+grid-encoding degeneracy (item C) offers the least structural resistance to
+absorbing it.
+
+================================================================================
+PART 3: BOTTOM LINE FOR THE WRITE-UP
+================================================================================
+
+[ESTABLISHED] No code bug. The mechanism is empirically traceable to:
+  1. An unusually weak learned free-running temperature forecast skill at
+     50 hPa / near-pole (confirmed via two independent normalized measurements
+     -- the largest of 32 variable/level/region combinations tested by a wide
+     margin).
+  2. This weak skill translates directly into the largest out-of-distribution
+     "shock" (z-score of the truth-vs-model-prediction jump) of any variable/
+     level tested when hard-replacement occurs at that location.
+  3. GraphCast's local-GNN architecture has no explicit geostrophic/hydrostatic
+     rebalancing mechanism (the original hypothesis in
+     GRAPHCAST_T_INSERTION_ANOMALY_ANALYSIS.txt), so this shock is not damped;
+     it is re-forced every 6-hour insertion step and compounds
+     super-exponentially, especially at 50 hPa.
+  4. The South Pole's grid-to-mesh encoding has a genuine structural
+     degeneracy (all longitudes collapse to one 3D point), which plausibly
+     amplifies why the worst failures concentrate there specifically.
+  5. Z-insertion and UV-insertion do not trigger this because their own
+     normalized insertion shocks stay far smaller everywhere checked -- there
+     is no comparable "weak-skill-plus-large-shock" coincidence for those
+     variables at any tested level/region.
+
+[NEEDS FOLLOW-UP] (not yet checked in this session, candidates for future
+work):
+  - Whether the weak 50 hPa / near-polar temperature skill is a documented,
+    known limitation of GraphCast in the DeepMind literature, or specific to
+    this IC/season/checkpoint.
+  - Whether a damped/partial-nudging temperature insertion (weaker correction
+    strength, already flagged as an open follow-up in
+    GRAPHCAST_T_INSERTION_ANOMALY_ANALYSIS.txt Section 8.2) would avoid
+    triggering this instability by keeping the per-step shock below some
+    stability threshold -- items A/B above suggest a concrete, testable
+    threshold-based hypothesis for that follow-up experiment.
+  - Whether restricting temperature insertion to exclude 50 hPa / near-polar
+    latitudes (analogous to the existing land/ocean-restricted extended_exp/
+    variants) would eliminate the blow-up while still testing T-insertion
+    elsewhere.
+  - A direct thermal-wind/hydrostatic-imbalance calculation (rather than the
+    normalization-based proxy used here) to quantitatively confirm item E's
+    physical framing.
+
+================================================================================
+Methodology note: findings above were produced by loading actual NetCDF
+truth/prediction data with xarray (venv_graphcast/bin/python), diffing actual
+code files across the three variant directories, and reading the relevant
+graphcast/*.py source directly -- not by re-deriving conclusions from the
+existing analysis document's text.
+================================================================================
